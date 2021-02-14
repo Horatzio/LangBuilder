@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Web.UI.WebControls
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -27,16 +28,26 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+<div class="container body-content">
+    <div id="vue-root">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
+</div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/vue.js")
+
+<script>
+    new Vue({
+
+    }).$mount("#vue-root");
+    </script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>
