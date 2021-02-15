@@ -5,6 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="@("https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css")" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -24,16 +28,25 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
                 </ul>
             </div>
         </div>
     </div>
 <div class="container body-content">
-    <div id="vue-root">
-        @RenderBody()
+    <div id="app">
+        <div>
+            @RenderBody()
+            <v-card outlined>
+                Some text here
+            </v-card>
+        </div>
     </div>
     <hr/>
     <footer>
+        <v-btn>
+            Some text here
+        </v-btn>
         <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
     </footer>
 </div>
@@ -42,12 +55,6 @@
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/vue.js")
 
-<script>
-    new Vue({
-
-    }).$mount("#vue-root");
-    </script>
-
-    @RenderSection("scripts", required: false)
+@RenderSection("scripts", required: false)
 </body>
 </html>
