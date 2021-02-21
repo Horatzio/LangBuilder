@@ -1,0 +1,19 @@
+- Implement home page
+    - Header
+    - Footer
+    - Home page content
+    - About page
+    - Contact page
+    - Error page
+- Implement category listing page
+- Implement builder page
+- Implement editor page
+- Implement export and usages page
+
+Tasks done:
+- Set up starter site
+- Install nugets
+- Install vue.js libraries and frameworks
+- Set up IIS hosting
+- Clean up .NET Web App base
+
