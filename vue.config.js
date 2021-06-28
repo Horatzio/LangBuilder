@@ -1,5 +1,5 @@
 module.exports = {
-    outputDir: 'dist',
+    outputDir: 'wwwroot/dist',
     filenameHashing: false,
     configureWebpack: {
         optimization: {

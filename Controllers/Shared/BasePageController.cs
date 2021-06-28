@@ -1,9 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace LangBuilder.Web.Controllers.Shared
+namespace LangBuilder.Controllers.Shared
 {
     public class BasePageController : Controller
-
     {
     }
 }

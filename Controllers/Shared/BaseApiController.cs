@@ -1,8 +1,9 @@
-﻿using System.Web.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace LangBuilder.Web.Controllers.Shared
+namespace LangBuilder.Controllers.Shared
 {
-    public class BaseApiController : ApiController
+    [ApiController]
+    public class BaseApiController : ControllerBase
     {
     }
 }

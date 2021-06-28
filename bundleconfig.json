@@ -1,0 +1,14 @@
+﻿[
+  {
+    "outputFileName": "wwwroot/js/vue.js",
+    "inputFiles": [
+      "~/dist/js/app.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.css",
+    "inputFiles": [
+      "~/site.css"
+    ]
+  }
+]
