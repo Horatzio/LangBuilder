@@ -2,7 +2,6 @@
 
 namespace LangBuilder.Controllers.Shared
 {
-    [ApiController]
     public class BaseApiController : ControllerBase
     {
     }

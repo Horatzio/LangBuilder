@@ -1,3 +1,4 @@
+using LangBuilder.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,9 @@ namespace LangBuilder
             services.AddControllersWithViews();
             services.AddDbContext<LangBuilderContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
+
+            services.Configure<LangBuilderConfiguration>(Configuration.GetSection("LangBuilderConfiguration"));
+            services.AddSingleton(typeof(ParserService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
