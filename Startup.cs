@@ -24,8 +24,9 @@ namespace LangBuilder
             services.AddDbContext<LangBuilderContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
 
-            services.Configure<LangBuilderConfiguration>(Configuration.GetSection("LangBuilderConfiguration"));
-            services.AddSingleton(typeof(ParserService));
+            services.Configure<GeneratorConfiguration>(Configuration.GetSection("GeneratorConfiguration"));
+            services.AddSingleton<AntlrGeneratorService>();
+            services.AddSingleton<ExecutableGeneratorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +38,7 @@ namespace LangBuilder
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Errors");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
