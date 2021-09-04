@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,10 +7,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LangBuilder.Domain;
+using LangBuilder.Extensions;
 using LangBuilder.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Options;
 
 namespace LangBuilder.Service
@@ -25,211 +30,160 @@ namespace LangBuilder.Service
 
         public async Task<GenerateExecutableOutputModel> GenerateExecutable()
         {
-            //GenerateConcreteVisitor();
-
             var transpilerProgramPath = _generatorConfiguration.TranspilerProgramPath;
 
             var transpilerProjectPath = Path.Combine(transpilerProgramPath, "Transpiler.csproj");
 
             var executablePath = _generatorConfiguration.ExecutablePath;
 
+            var ruleList = new List<TranspilerRule>();
+
+            ruleList.Add(new TranspilerRule
+            {
+                Name = "rule1"
+            });
+
+            GenerateConcreteVisitorImplementations(transpilerProgramPath, ruleList);
+
             var antlrRuntimePath = Path.Combine(transpilerProgramPath, "Antlr4.Runtime.Standard.dll");
 
-            //var outputPath = _generatorConfiguration.AntlrOutputPath;
-
-            //var grammarName = "TranspilerGrammar";
-
-            //var baseVisitorName = $"{grammarName}BaseVisitor";
-
-            //var baseVisitorPath = $"{outputPath}\\{baseVisitorName}.cs";
-
-            //var concreteVisitorName = $"{grammarName}ConcreteVisitor";
-
-            //var concreteVisitorPath = $"{outputPath}\\{concreteVisitorName}.cs";
-
-            //var mainPath = $"{transpilerProgramPath}\\Program.cs";
-
-            //var baseVisitorSyntaxTree =
-            //    SyntaxFactory.ParseSyntaxTree(SourceText.From(File.ReadAllText(baseVisitorPath)));
-
-            //var concreteVisitorSyntaxTree =
-            //    SyntaxFactory.ParseSyntaxTree(SourceText.From(File.ReadAllText(concreteVisitorPath)));
-
-            //var mainSyntaxTree = SyntaxFactory.ParseSyntaxTree(SourceText.From(File.ReadAllText(mainPath)));
-
-            //var executablePath = _generatorConfiguration.ExecutablePath;
-
-            //File.Create(executablePath).Close();
-
-            //var assemblyPath = executablePath;
-
-
-            //var references = typeof(TranspilerGrammarConcreteVisitor).Assembly.GetReferencedAssemblies();
-
-            //var compilation = CSharpCompilation.Create(Path.GetFileName(assemblyPath))
-            //    .WithOptions(new CSharpCompilationOptions(OutputKind.ConsoleApplication))
-            //    .AddReferences(
-            //        MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
-            //        MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
-            //        MetadataReference.CreateFromFile(typeof(TranspilerGrammarConcreteVisitor).GetTypeInfo().Assembly.Location),
-            //        MetadataReference.CreateFromFile(typeof()
-            //        MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.dll"))
-            //    )
-            //    .AddSyntaxTrees(mainSyntaxTree, concreteVisitorSyntaxTree);
-
-            //var result = compilation.Emit(assemblyPath);
-
-            //File.WriteAllText(
-            //    Path.ChangeExtension(assemblyPath, "runtimeconfig.json"),
-            //    GenerateRuntimeConfig()
-            //);
-
-            //var process = Process.Start("dotnet", assemblyPath);
-
-            using (var workspace = MSBuildWorkspace.Create())
+            using var workspace = MSBuildWorkspace.Create();
+            workspace.WorkspaceFailed += (sender, args) =>
             {
-                workspace.WorkspaceFailed += (sender, args) =>
+                Console.WriteLine(args.Diagnostic.Message);
+            };
+
+            var project = await workspace.OpenProjectAsync(transpilerProjectPath);
+
+            var compilation = await project.GetCompilationAsync();
+
+            var GCSettingsAssembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location;
+
+            var dotNetCoreDir = Path.GetDirectoryName(GCSettingsAssembly);
+
+            var netstandard = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "netstandard");
+
+            compilation = compilation
+                .AddReferences(
+                    MetadataReference.CreateFromFile(GCSettingsAssembly),
+                    MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
+                    MetadataReference.CreateFromFile(netstandard.Location),
+                    MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.dll")),
+                    MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.Extensions.dll")),
+                    MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Linq.dll")),
+                    MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Collections.dll")),
+                    MetadataReference.CreateFromFile(antlrRuntimePath)
+                );
+
+            var runtimeConfig = GenerateRuntimeConfig();
+
+            var result = compilation.Emit(executablePath);
+
+            File.WriteAllTextAsync(Path.ChangeExtension(executablePath, ".runtimeconfig.json"), runtimeConfig);
+
+            return new GenerateExecutableOutputModel
+            {
+                Success = result.Success,
+                Errors = result.Diagnostics.Select(d => new GenerateExecutableDiagnosticError
                 {
-                    Console.WriteLine(args.Diagnostic.Message);
-                };
-
-                var project = await workspace.OpenProjectAsync(transpilerProjectPath);
-
-                var compilation = await project.GetCompilationAsync();
-
-                var GCSettingsAssembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location;
-
-                var dotNetCoreDir = Path.GetDirectoryName(GCSettingsAssembly);
-
-                var netstandard = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "netstandard");
-
-                var dotNetCoreDirEntries = Directory.EnumerateFiles(dotNetCoreDir);
-
-                var systemReferences = dotNetCoreDirEntries.Select(e => MetadataReference.CreateFromFile(e));
-
-                compilation = compilation
-                    .AddReferences(
-                        MetadataReference.CreateFromFile(GCSettingsAssembly),
-                        MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
-                        MetadataReference.CreateFromFile(netstandard.Location),
-                        MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.dll")),
-                        MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.Extensions.dll")),
-                        MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Linq.dll")),
-                        MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Collections.dll")),
-                        MetadataReference.CreateFromFile(antlrRuntimePath)
-                    );
-
-                var result = compilation.Emit(executablePath);
-
-                return new GenerateExecutableOutputModel
-                {
-                    Success = result.Success,
-                    Errors = result.Diagnostics.Select(d => new GenerateExecutableDiagnosticError
+                    Severity = d.Severity.ToString(),
+                    ErrorId = d.Descriptor.Id,
+                    Description = d.Descriptor.Category,
+                    Message = d.GetMessage(),
+                    Location = new GenerateExecutableDiagnosticErrorLocation
                     {
-                        Severity = d.Severity.ToString(),
-                        ErrorId = d.Descriptor.Id,
-                        Description = d.Descriptor.Category,
-                        Message = d.GetMessage(),
-                        Location = new GenerateExecutableDiagnosticErrorLocation
-                        {
-                            StartLine = d.Location.GetLineSpan().StartLinePosition.Line,
-                            StartPosition = d.Location.GetLineSpan().StartLinePosition.Character,
-                            EndLine = d.Location.GetLineSpan().EndLinePosition.Line,
-                            EndPosition = d.Location.GetLineSpan().EndLinePosition.Character
-                        }
-                    })
-                };
-            }
+                        StartLine = d.Location.GetLineSpan().StartLinePosition.Line,
+                        StartPosition = d.Location.GetLineSpan().StartLinePosition.Character,
+                        EndLine = d.Location.GetLineSpan().EndLinePosition.Line,
+                        EndPosition = d.Location.GetLineSpan().EndLinePosition.Character
+                    }
+                })
+            };
         }
 
-        private void GenerateConcreteVisitor()
+        private void GenerateConcreteVisitorImplementations(string transpilerProgramPath, IEnumerable<TranspilerRule> rules)
         {
-            //var transpilerProgramPath = _generatorConfiguration.TranspilerProgramPath;
-            //var outputPath = _generatorConfiguration.AntlrOutputPath;
+            var grammarName = "TranspilerGrammar";
 
-            //var grammarName = "TranspilerGrammar";
+            var concreteVisitorName = $"{grammarName}ConcreteVisitor";
 
-            //var baseVisitorName = $"{grammarName}BaseVisitor";
+            var concreteVisitorPath = $"{transpilerProgramPath}\\{concreteVisitorName}GeneratedMethods.cs";
 
-            //var baseVisitorPath = $"{outputPath}\\{baseVisitorName}.cs";
+            var concreteVisitorSyntaxTree = SyntaxFactory.ParseSyntaxTree(File.ReadAllText(concreteVisitorPath));
 
-            //var concreteVisitorName = $"{grammarName}ConcreteVisitor";
+            var parserName = $"{grammarName}Parser";
 
-            //var concreteVisitorPath = $"{outputPath}\\{concreteVisitorName}.cs";
+            var stringType = SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.StringKeyword));
 
-            //var baseVisitorSyntaxTree =
-            //    SyntaxFactory.ParseSyntaxTree(SourceText.From(File.ReadAllText(baseVisitorPath)));
+            var methods = rules.Select(rule =>
+            {
+                var modifiers = new SyntaxTokenList();
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
 
-            //var baseVisitorRoot = baseVisitorSyntaxTree.GetRoot();
+                var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement($"return \"{rule.Name}\";")
+                    .NormalizeWhitespace());
 
-            //var baseVisitorNodes = baseVisitorRoot.ChildNodes();
+                SeparatedSyntaxList<ParameterSyntax> parametersList = new SeparatedSyntaxList<ParameterSyntax>().AddRange
+                (new []
+                    {
+                        SyntaxFactory.Parameter(SyntaxFactory.Identifier("context")).WithType(SyntaxFactory.ParseTypeName($"{parserName}.{rule.Name.ToCapitalizedFirstLetter()}Context"))
+                    }
+                );
 
-            //baseVisitorNodes = baseVisitorNodes.Append(baseVisitorRoot);
+                var parameterListSyntax = SyntaxFactory.ParameterList(parametersList);
 
-            //var baseVisitorClassDeclaration = baseVisitorNodes.OfType<ClassDeclarationSyntax>().FirstOrDefault();
+                var method = SyntaxFactory.MethodDeclaration(stringType, SyntaxFactory.Identifier($"Visit{rule.Name.ToCapitalizedFirstLetter()}"))
+                    .WithModifiers(modifiers)
+                    .WithParameterList(parameterListSyntax)
+                    .WithBody(body)
+                    .NormalizeWhitespace();
 
-            //var concreteVisitorClassDeclaration = SyntaxFactory.ClassDeclaration(concreteVisitorName);
+                return method;
+            });
 
-            //concreteVisitorClassDeclaration = concreteVisitorClassDeclaration.AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            var concreteVisitorChildNodes = concreteVisitorSyntaxTree.GetRoot()
+                .DescendantNodes();
 
-            //concreteVisitorClassDeclaration = concreteVisitorClassDeclaration.AddBaseListTypes(
-            //    SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseName($"{baseVisitorName}<string>"))
-            //);
+            var concreteVisitorClass = concreteVisitorChildNodes
+                .OfType<ClassDeclarationSyntax>()
+                .FirstOrDefault(c => c.Identifier.Text == concreteVisitorName);
 
-            //var methods = baseVisitorClassDeclaration.Members.OfType<MethodDeclarationSyntax>();
+            var newConcreteVisitorClass = concreteVisitorClass
+                .WithMembers(new SyntaxList<MemberDeclarationSyntax>(methods))
+                .NormalizeWhitespace();
 
-            //var stringType = SyntaxFactory.ParseTypeName("string");
+            var concreteVisitorRoot = concreteVisitorSyntaxTree.GetRoot();
 
-            //foreach (var method in methods)
-            //{
-            //    var modifiers = new SyntaxTokenList();
-            //    modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            //    modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+            concreteVisitorRoot = concreteVisitorRoot.ReplaceNode(concreteVisitorClass, newConcreteVisitorClass);
 
-            //    var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement("return \"\";"));
+            concreteVisitorSyntaxTree =
+                concreteVisitorSyntaxTree.WithRootAndOptions(concreteVisitorRoot.NormalizeWhitespace(), concreteVisitorSyntaxTree.Options);
 
-            //    var memberMethod = SyntaxFactory.MethodDeclaration(stringType, method.Identifier)
-            //        .WithModifiers(modifiers)
-            //        .WithParameterList(method.ParameterList)
-            //        .WithBody(body);
-
-            //    concreteVisitorClassDeclaration = concreteVisitorClassDeclaration.AddMembers(memberMethod);
-            //}
-
-            //var concreteVisitorNamespace =
-            //    SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("Transpiler.Output"));
-
-            //concreteVisitorNamespace = concreteVisitorNamespace.AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Antlr4.Runtime.Misc")));
-            //concreteVisitorNamespace = concreteVisitorNamespace.AddMembers(concreteVisitorClassDeclaration);
-
-            //File.WriteAllText(concreteVisitorPath, concreteVisitorNamespace.NormalizeWhitespace()
-            //    .ToFullString());
+            File.WriteAllText(concreteVisitorPath, concreteVisitorSyntaxTree.ToString());
         }
 
         private string GenerateRuntimeConfig()
         {
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new Utf8JsonWriter(
-                    stream,
-                    new JsonWriterOptions() { Indented = true }
-                ))
-                {
-                    writer.WriteStartObject();
-                    writer.WriteStartObject("runtimeOptions");
-                    writer.WriteStartObject("framework");
-                    writer.WriteString("name", "Microsoft.NETCore.App");
-                    writer.WriteString(
-                        "version",
-                        RuntimeInformation.FrameworkDescription.Replace(".NET Core ", "")
-                    );
-                    writer.WriteEndObject();
-                    writer.WriteEndObject();
-                    writer.WriteEndObject();
-                }
+            using var stream = new MemoryStream();
+            using var writer = new Utf8JsonWriter(
+                stream,
+                new JsonWriterOptions() {Indented = true}
+            );
+            
+            writer.WriteStartObject();
+            writer.WriteStartObject("runtimeOptions");
+            writer.WriteStartObject("framework");
+            writer.WriteString("name", "Microsoft.NETCore.App");
+            writer.WriteString(
+                "version",
+                RuntimeInformation.FrameworkDescription.Replace(".NET Core ", "")
+            );
+            writer.WriteEndObject();
+            writer.WriteEndObject();
+            writer.WriteEndObject();
 
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 }
