@@ -67,6 +67,7 @@ namespace LangBuilder.Service
                 .AddReferences(
                     MetadataReference.CreateFromFile(GCSettingsAssembly),
                     MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(File).GetTypeInfo().Assembly.Location),
                     MetadataReference.CreateFromFile(netstandard.Location),
                     MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.dll")),
                     MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.Extensions.dll")),
@@ -170,7 +171,7 @@ namespace LangBuilder.Service
                 stream,
                 new JsonWriterOptions() {Indented = true}
             );
-            
+
             writer.WriteStartObject();
             writer.WriteStartObject("runtimeOptions");
             writer.WriteStartObject("framework");
@@ -182,6 +183,8 @@ namespace LangBuilder.Service
             writer.WriteEndObject();
             writer.WriteEndObject();
             writer.WriteEndObject();
+
+            writer.Flush();
 
             return Encoding.UTF8.GetString(stream.ToArray());
         }
