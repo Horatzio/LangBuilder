@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using LangBuilder.Models;
 using Microsoft.Extensions.Options;
 
-namespace LangBuilder.Service
+namespace LangBuilder.Source.Service
 {
     public class AntlrGeneratorService
     {
@@ -13,7 +14,7 @@ namespace LangBuilder.Service
             _configuration = configuration.Value;
         }
 
-        public void ClearOutputDirectory(string antlrOutputPath)
+        public async Task ClearOutputDirectory(string antlrOutputPath)
         {
             var directory = new DirectoryInfo(antlrOutputPath);
 
@@ -30,31 +31,32 @@ namespace LangBuilder.Service
             }
         }
 
-        public AntlrGenerateOutputModel GenerateAntlrFiles()
+        public async Task<AntlrGenerateOutputModel> GenerateAntlrFiles()
         {
-            ClearOutputDirectory(_configuration.AntlrOutputPath);
+            await ClearOutputDirectory(_configuration.AntlrOutputPath);
 
             var arguments = string.Format(_configuration.AntlrCommandLine, _configuration.GrammarFilePath,
                 _configuration.AntlrOutputPath);
 
-            var processStartInfo = new ProcessStartInfo(_configuration.AntlrPath, arguments);
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
-            using (var process = Process.Start(processStartInfo))
+            var processStartInfo = new ProcessStartInfo(_configuration.AntlrPath, arguments)
             {
-                process.WaitForExit();
+                RedirectStandardOutput = true, 
+                RedirectStandardError = true
+            };
 
-                var exitCode = process.ExitCode;
-                var output = process.StandardOutput.ReadToEnd();
-                var error = process.StandardError.ReadToEnd();
+            using var process = Process.Start(processStartInfo);
+            process.WaitForExit();
 
-                return new AntlrGenerateOutputModel
-                {
-                    ExitCode = exitCode,
-                    Output = output,
-                    Error = error
-                };
-            }
+            var exitCode = process.ExitCode;
+            var output = await process.StandardOutput.ReadToEndAsync();
+            var error = await process.StandardError.ReadToEndAsync();
+
+            return new AntlrGenerateOutputModel
+            {
+                ExitCode = exitCode,
+                Output = output,
+                Error = error
+            };
         }
     }
 }

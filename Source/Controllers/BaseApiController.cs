@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace LangBuilder.Controllers.Shared
+namespace LangBuilder.Source.Controllers
 {
     public class BaseApiController : ControllerBase
     {

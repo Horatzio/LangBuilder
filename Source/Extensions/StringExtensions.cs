@@ -1,4 +1,4 @@
-﻿namespace LangBuilder.Extensions
+﻿namespace LangBuilder.Source.Extensions
 {
     public static class StringExtensions
     {

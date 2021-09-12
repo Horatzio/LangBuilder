@@ -1,4 +1,4 @@
-using LangBuilder.Service;
+using LangBuilder.Source.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +27,7 @@ namespace LangBuilder
             services.Configure<GeneratorConfiguration>(Configuration.GetSection("GeneratorConfiguration"));
             services.AddSingleton<AntlrGeneratorService>();
             services.AddSingleton<ExecutableGeneratorService>();
+            services.AddSingleton<GrammarFileGeneratorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +54,7 @@ namespace LangBuilder
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

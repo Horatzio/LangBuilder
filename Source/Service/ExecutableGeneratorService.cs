@@ -7,17 +7,16 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using LangBuilder.Domain;
-using LangBuilder.Extensions;
 using LangBuilder.Models;
+using LangBuilder.Source.Domain;
+using LangBuilder.Source.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Options;
 
-namespace LangBuilder.Service
+namespace LangBuilder.Source.Service
 {
     public class ExecutableGeneratorService
     {
@@ -28,30 +27,19 @@ namespace LangBuilder.Service
             _generatorConfiguration = configuration.Value;
         }
 
-        public async Task<GenerateExecutableOutputModel> GenerateExecutable()
+        public async Task<GenerateExecutableOutputModel> GenerateExecutable(TranspilerModel model)
         {
+            var grammarName = $"{model.GrammarName}";
+
             var transpilerProgramPath = _generatorConfiguration.TranspilerProgramPath;
 
             var transpilerProjectPath = Path.Combine(transpilerProgramPath, "Transpiler.csproj");
 
-            var executablePath = _generatorConfiguration.ExecutablePath;
+            var executablePath = Path.Combine(Path.GetDirectoryName(_generatorConfiguration.ExecutablePath), $"{model.Name}{Path.GetExtension(_generatorConfiguration.ExecutablePath)}");
 
-            var ruleList = new List<TranspilerRule>();
-
-            ruleList.Add(new TranspilerRule
-            {
-                Name = "rule1"
-            });
-
-            GenerateConcreteVisitorImplementations(transpilerProgramPath, ruleList);
-
-            var antlrRuntimePath = Path.Combine(transpilerProgramPath, "Antlr4.Runtime.Standard.dll");
+            GenerateConcreteVisitorImplementations(grammarName, transpilerProgramPath, model.Rules);
 
             using var workspace = MSBuildWorkspace.Create();
-            workspace.WorkspaceFailed += (sender, args) =>
-            {
-                Console.WriteLine(args.Diagnostic.Message);
-            };
 
             var project = await workspace.OpenProjectAsync(transpilerProjectPath);
 
@@ -62,6 +50,8 @@ namespace LangBuilder.Service
             var dotNetCoreDir = Path.GetDirectoryName(GCSettingsAssembly);
 
             var netstandard = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "netstandard");
+
+            var antlrRuntimePath = Path.Combine(transpilerProgramPath, "Antlr4.Runtime.Standard.dll");
 
             compilation = compilation
                 .AddReferences(
@@ -76,11 +66,10 @@ namespace LangBuilder.Service
                     MetadataReference.CreateFromFile(antlrRuntimePath)
                 );
 
-            var runtimeConfig = GenerateRuntimeConfig();
-
             var result = compilation.Emit(executablePath);
-
-            File.WriteAllTextAsync(Path.ChangeExtension(executablePath, ".runtimeconfig.json"), runtimeConfig);
+            
+            var runtimeConfig = GenerateRuntimeConfig();
+            await File.WriteAllTextAsync(Path.ChangeExtension(executablePath, ".runtimeconfig.json"), runtimeConfig);
 
             return new GenerateExecutableOutputModel
             {
@@ -102,10 +91,8 @@ namespace LangBuilder.Service
             };
         }
 
-        private void GenerateConcreteVisitorImplementations(string transpilerProgramPath, IEnumerable<TranspilerRule> rules)
+        private void GenerateConcreteVisitorImplementations(string grammarName, string transpilerProgramPath, IEnumerable<TranspilerRule> rules)
         {
-            var grammarName = "TranspilerGrammar";
-
             var concreteVisitorName = $"{grammarName}ConcreteVisitor";
 
             var concreteVisitorPath = $"{transpilerProgramPath}\\{concreteVisitorName}GeneratedMethods.cs";
@@ -122,7 +109,7 @@ namespace LangBuilder.Service
                 modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
                 modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
 
-                var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement($"return \"{rule.Name}\";")
+                var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement($"return \"{rule.OutputExpression}\";")
                     .NormalizeWhitespace());
 
                 SeparatedSyntaxList<ParameterSyntax> parametersList = new SeparatedSyntaxList<ParameterSyntax>().AddRange
@@ -164,12 +151,12 @@ namespace LangBuilder.Service
             File.WriteAllText(concreteVisitorPath, concreteVisitorSyntaxTree.ToString());
         }
 
-        private string GenerateRuntimeConfig()
+        private static string GenerateRuntimeConfig()
         {
             using var stream = new MemoryStream();
             using var writer = new Utf8JsonWriter(
                 stream,
-                new JsonWriterOptions() {Indented = true}
+                new JsonWriterOptions {Indented = true}
             );
 
             writer.WriteStartObject();
