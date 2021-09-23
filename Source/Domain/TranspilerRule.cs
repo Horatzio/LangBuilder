@@ -1,9 +1,9 @@
 ﻿namespace LangBuilder.Source.Domain
 {
-    public class TranspilerRule
+    public abstract class TranspilerRule
     {
         public string Name { get; set; }
-        public string InputExpression { get; set; }
-        public string OutputExpression { get; set; }
+        public abstract string GrammarRule { get; }
+        public abstract string RuleBody { get; }
     }
 }

@@ -21,8 +21,6 @@ namespace LangBuilder
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<LangBuilderContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
 
             services.Configure<GeneratorConfiguration>(Configuration.GetSection("GeneratorConfiguration"));
             services.AddSingleton<AntlrGeneratorService>();

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LangBuilder.Source.Domain;
+using LangBuilder.Source.Models;
 using LangBuilder.Source.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,19 +15,29 @@ namespace LangBuilder.Source.Controllers
         private readonly ExecutableGeneratorService _executableGeneratorService;
         private readonly GeneratorConfiguration _generatorConfiguration;
         private readonly GrammarFileGeneratorService _grammarFileGeneratorService;
+        private readonly TranspilerRuleService _transpilerRuleService;
 
-        public GenerateApiController(AntlrGeneratorService antlrGeneratorService, ExecutableGeneratorService executableGeneratorService, IOptions<GeneratorConfiguration> generatorConfigurationOptions, GrammarFileGeneratorService grammarFileGeneratorService)
+        public GenerateApiController(AntlrGeneratorService antlrGeneratorService, ExecutableGeneratorService executableGeneratorService, IOptions<GeneratorConfiguration> generatorConfigurationOptions, GrammarFileGeneratorService grammarFileGeneratorService, TranspilerRuleService transpilerRuleService)
         {
             _antlrGeneratorService = antlrGeneratorService;
             _executableGeneratorService = executableGeneratorService;
             _grammarFileGeneratorService = grammarFileGeneratorService;
+            _transpilerRuleService = transpilerRuleService;
             _generatorConfiguration = generatorConfigurationOptions.Value;
         }
 
         [HttpPost("test-transpile")]
-        public async Task<IActionResult> TestGenerateTranspiler([FromBody] TranspilerModel model)
+        public async Task<IActionResult> TestGenerateTranspiler([FromBody] TranspilerViewModel viewModel)
         {
-            model.GrammarName = "TranspilerGrammar";
+            viewModel.GrammarName = "TranspilerGrammar";
+
+            var model = new TranspilerModel()
+            {
+                GrammarName = "TranspilerGrammar",
+                Name = viewModel.Name,
+                Rules = await _transpilerRuleService.ProcessRules(viewModel.Rules)
+            };
+
             await _grammarFileGeneratorService.GenerateGrammarFile(model);
             var antlrResult = await _antlrGeneratorService.GenerateAntlrFiles();
 

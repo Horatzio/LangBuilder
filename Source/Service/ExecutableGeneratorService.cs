@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using LangBuilder.Models;
 using LangBuilder.Source.Domain;
 using LangBuilder.Source.Extensions;
+using LangBuilder.Source.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -109,7 +110,7 @@ namespace LangBuilder.Source.Service
                 modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
                 modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
 
-                var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement($"return \"{rule.OutputExpression}\";")
+                var body = SyntaxFactory.Block(SyntaxFactory.ParseStatement(rule.RuleBody)
                     .NormalizeWhitespace());
 
                 SeparatedSyntaxList<ParameterSyntax> parametersList = new SeparatedSyntaxList<ParameterSyntax>().AddRange
