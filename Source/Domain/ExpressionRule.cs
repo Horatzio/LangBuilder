@@ -2,14 +2,14 @@
 {
     public class ExpressionRule : TranspilerRule
     {
-        private readonly string _expression;
+        internal readonly string Expression;
 
         public ExpressionRule(string expression)
         {
-            _expression = expression;
+            Expression = expression;
         }
 
-        public override string GrammarRule => $"{_expression}";
+        public override string GrammarRule => $"{Expression}";
         public override string RuleBody => "return context.GetText();";
     }
 }

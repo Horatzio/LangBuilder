@@ -3,9 +3,7 @@ using System.Linq;
 
 namespace LangBuilder.Source.Domain
 {
-    public class SimpleRuleAttribute : Attribute
-    {
-    }
+    public class SimpleRuleAttribute : Attribute { }
 
     public enum RuleType
     {

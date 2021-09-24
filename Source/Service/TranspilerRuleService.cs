@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LangBuilder.Source.Domain;
@@ -10,12 +11,31 @@ namespace LangBuilder.Source.Service
     {
         public async Task<IEnumerable<TranspilerRule>> ProcessRules(IEnumerable<TranspilerRuleViewModel> models)
         {
-            var simpleRules = models.Select()
+            var simpleRules = models.Where(r => r.Type.IsSimple())
+                .Select(TransformSimpleRule);
 
-            return models.Select(TransformRule);
+            var complexRules = models.Select(r => TransformComplexRule(r, simpleRules));
+
+            return simpleRules.Concat(complexRules);
         }
 
-        public TranspilerRule TransformRule(TranspilerRuleViewModel model)
+        public TranspilerRule TransformSimpleRule(TranspilerRuleViewModel model)
+        {
+            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+            return model.Type switch
+            {
+                RuleType.DirectTranslation => new DirectTranslationRule(
+                    model.Properties[nameof(DirectTranslationRule.InputSymbol)] as string,
+                    model.Properties[nameof(DirectTranslationRule.OutputSymbol)] as string) {Name = model.Name},
+                RuleType.Expression => new ExpressionRule(model.Properties[nameof(ExpressionRule.Expression)] as string)
+                {
+                    Name = model.Name
+                },
+                _ => throw new ApplicationException("Undefined simple rule")
+            };
+        }
+
+        public TranspilerRule TransformComplexRule(TranspilerRuleViewModel model, IEnumerable<TranspilerRule> simpleRules)
         {
             return new DirectTranslationRule("a", "b");
         }
