@@ -10,6 +10,8 @@ namespace LangBuilder.Source.Service
     {
         public async Task<IEnumerable<TranspilerRule>> ProcessRules(IEnumerable<TranspilerRuleViewModel> models)
         {
+            var simpleRules = models.Select()
+
             return models.Select(TransformRule);
         }
 
@@ -17,6 +19,5 @@ namespace LangBuilder.Source.Service
         {
             return new DirectTranslationRule("a", "b");
         }
-
     }
 }

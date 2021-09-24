@@ -1,4 +1,4 @@
-﻿using LangBuilder.Source.Domain;
+﻿using System.Collections.Generic;
 
 namespace LangBuilder.Source.Models
 {
@@ -6,7 +6,6 @@ namespace LangBuilder.Source.Models
     {
         public string GrammarName { get; set; }
         public string Name { get; set; }
-
-        public RuleSet rules { get; set; }
+        public IEnumerable<TranspilerRuleViewModel> Rules { get; set; }
     }
 }

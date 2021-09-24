@@ -1,10 +1,12 @@
-﻿namespace LangBuilder.Source.Domain
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace LangBuilder.Source.Domain
 {
     public class TranspilerModel
     {
         public string GrammarName { get; set; }
         public string Name { get; set; }
-
-        public RuleSet rules { get; set; }
+        public IEnumerable<TranspilerRule> Rules { get; set; }
     }
 }
