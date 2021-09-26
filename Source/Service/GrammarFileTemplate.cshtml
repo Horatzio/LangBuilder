@@ -10,5 +10,5 @@ statement: @Raw($"{string.Join(" | ", Model.Rules.Select(r => r.Name).ToArray())
 
 @foreach (var rule in Model.Rules)
 {
-    @Raw($"{rule.Name}: '{rule.GrammarRule}';\n")
+    @Raw($"{rule.Name}: {rule.GrammarRule};\n")
 }

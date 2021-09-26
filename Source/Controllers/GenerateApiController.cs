@@ -31,11 +31,11 @@ namespace LangBuilder.Source.Controllers
         {
             viewModel.GrammarName = "TranspilerGrammar";
 
-            var model = new TranspilerModel()
+            var model = new TranspilerModel
             {
                 GrammarName = "TranspilerGrammar",
                 Name = viewModel.Name,
-                Rules = await _transpilerRuleService.ProcessRules(viewModel.Rules)
+                Rules = await _transpilerRuleService.ProcessRules(viewModel.RuleSet)
             };
 
             await _grammarFileGeneratorService.GenerateGrammarFile(model);

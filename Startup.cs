@@ -26,6 +26,7 @@ namespace LangBuilder
             services.AddSingleton<AntlrGeneratorService>();
             services.AddSingleton<ExecutableGeneratorService>();
             services.AddSingleton<GrammarFileGeneratorService>();
+            services.AddSingleton<TranspilerRuleService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

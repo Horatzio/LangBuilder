@@ -8,11 +8,11 @@ namespace LangBuilder.Source.Domain
     public enum RuleType
     {
         [SimpleRule]
-        DirectTranslation,
+        DirectTranslation = 0,
         [SimpleRule]
-        Expression,
-        Block,
-        RuleSequence
+        Expression = 1,
+        Block = 2,
+        RuleSequence = 3
     }
 
     public static class RuleTypeExtensions

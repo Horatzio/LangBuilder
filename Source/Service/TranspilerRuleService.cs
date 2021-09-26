@@ -3,48 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LangBuilder.Source.Domain;
-using LangBuilder.Source.Models;
 
 namespace LangBuilder.Source.Service
 {
     public class TranspilerRuleService
     {
-        public async Task<IEnumerable<TranspilerRule>> ProcessRules(IEnumerable<TranspilerRuleViewModel> models)
+        public async Task<IEnumerable<TranspilerRule>> ProcessRules(TranspilerRuleSet ruleSet)
         {
-            var simpleRules = models.Where(r => r.Type.IsSimple())
+            var models = ruleSet.Rules;
+
+            var simpleRuleModels = models.Where(r => r.Type.IsSimple());
+
+            var simpleRules = simpleRuleModels
                 .Select(TransformSimpleRule);
 
-            var complexRules = models.Select(r => TransformComplexRule(r, simpleRules));
+            var complexRuleModels = models.Where(r => !r.Type.IsSimple());
 
-            return simpleRules.Concat(complexRules);
+            var rules = ComplexRuleTransfomer.TransformComplexRules(complexRuleModels, simpleRules);
+
+            return rules;
         }
 
         public TranspilerRule TransformSimpleRule(TranspilerRuleViewModel model)
         {
             // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-            return model.Type switch
+            return model switch
             {
-                RuleType.DirectTranslation => new DirectTranslationRule(
-                    model.Properties[nameof(DirectTranslationRule.InputSymbol)] as string,
-                    model.Properties[nameof(DirectTranslationRule.OutputSymbol)] as string) {Name = model.Name},
-                RuleType.Expression => new ExpressionRule(model.Properties[nameof(ExpressionRule.Expression)] as string)
+                DirectTranslationRuleViewModel viewModel => new DirectTranslationRule
                 {
-                    Name = model.Name
+                    Name = model.Name,
+                    InputSymbol = viewModel.InputSymbol,
+                    OutputSymbol = viewModel.OutputSymbol
+                },
+                ExpressionRuleViewModel viewModel => new ExpressionRule
+                {
+                    Name = model.Name,
+                    Expression = viewModel.Expression
                 },
                 _ => throw new ApplicationException("Undefined simple rule")
-            };
-        }
-
-        public TranspilerRule TransformComplexRule(TranspilerRuleViewModel model, IEnumerable<TranspilerRule> simpleRules)
-        {
-            return model.Type switch
-            {
-                RuleType.Block => new BlockRule(
-                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string),
-                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string),
-                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string)
-                ),
-                _ => throw new ApplicationException("Undefined complex rule")
             };
         }
     }
