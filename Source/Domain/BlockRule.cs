@@ -2,20 +2,20 @@
 {
     public class BlockRule : TranspilerRule
     {
-        private readonly TranspilerRule _blockStart;
+        internal readonly TranspilerRule BlockStart;
 
-        private readonly TranspilerRule _blockBody;
+        internal readonly TranspilerRule BlockBody;
 
-        private readonly TranspilerRule _blockEnd;
+        internal readonly TranspilerRule BlockEnd;
 
         public BlockRule(TranspilerRule blockStart, TranspilerRule blockBody, TranspilerRule blockEnd)
         {
-            _blockStart = blockStart;
-            _blockBody = blockBody;
-            _blockEnd = blockEnd;
+            BlockStart = blockStart;
+            BlockBody = blockBody;
+            BlockEnd = blockEnd;
         }
 
-        public override string GrammarRule => $"{_blockStart.Name} {_blockBody.Name} {_blockEnd.Name}";
-        public override string RuleBody => $"return context.{_blockBody}() + context.{_blockBody.Name}() + context.{_blockEnd}() ;";
+        public override string GrammarRule => $"{BlockStart.Name} {BlockBody.Name} {BlockEnd.Name}";
+        public override string RuleBody => $"return context.{BlockBody}() + context.{BlockBody.Name}() + context.{BlockEnd}() ;";
     }
 }

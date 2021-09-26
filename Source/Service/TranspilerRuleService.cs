@@ -37,7 +37,15 @@ namespace LangBuilder.Source.Service
 
         public TranspilerRule TransformComplexRule(TranspilerRuleViewModel model, IEnumerable<TranspilerRule> simpleRules)
         {
-            return new DirectTranslationRule("a", "b");
+            return model.Type switch
+            {
+                RuleType.Block => new BlockRule(
+                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string),
+                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string),
+                    simpleRules.First(r => r.Name == model.Properties[nameof(BlockRule.BlockStart)] as string)
+                ),
+                _ => throw new ApplicationException("Undefined complex rule")
+            };
         }
     }
 }
