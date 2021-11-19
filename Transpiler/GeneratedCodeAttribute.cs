@@ -2,9 +2,6 @@
 {
     public class GeneratedCodeAttribute : Attribute
     {
-        public GeneratedCodeAttribute(string s1, string s2)
-        {
-
-        }
+        public GeneratedCodeAttribute(string s1, string s2) { }
     }
 }
