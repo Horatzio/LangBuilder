@@ -1,0 +1,15 @@
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.exe
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.deps.json
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.runtimeconfig.json
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.runtimeconfig.dev.json
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.dll
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Transpiler.pdb
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\bin\Debug\netcoreapp3.1\Antlr4.Runtime.Standard.dll
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.csprojAssemblyReference.cache
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.AssemblyInfoInputs.cache
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.AssemblyInfo.cs
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.csproj.CoreCompileInputs.cache
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.csproj.CopyComplete
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.dll
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.pdb
+C:\Studythings\LangBuilder\LangBuilderCore\Transpiler\obj\Debug\netcoreapp3.1\Transpiler.genruntimeconfig.cache

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "KMv0unUisHSCO8bqErJvOkOXJ7xXZTmNJgRdKEQOV9DOMi2X6aRQyfOjrNBnqtozEQGYazN/TMJPddZK1M0a+A==",
+  "success": true,
+  "projectFilePath": "C:\\Studythings\\LangBuilder\\Main\\LangBuilder\\Transpiler\\Transpiler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\horatiuduma\\.nuget\\packages\\antlr4.runtime.standard\\4.9.2\\antlr4.runtime.standard.4.9.2.nupkg.sha512"
+  ],
+  "logs": []
+}
