@@ -73,7 +73,8 @@ namespace LangBuilder.Source.JsonConverter
                 RuleType.DirectTranslation => ReadDirectTranslationRule(ref reader),
                 RuleType.Expression => ReadExpressionRule(ref reader),
                 RuleType.Block => ReadBlockRule(ref reader),
-                RuleType.RuleSequence => ReadRuleSequenceRule(ref reader)
+                RuleType.RuleSequence => ReadRuleSequenceRule(ref reader),
+                RuleType.RuleOptionSequence => ReadRuleOptionSequenceRule(ref reader)
             };
 
             reader.Read();
@@ -159,6 +160,41 @@ namespace LangBuilder.Source.JsonConverter
             return new RuleSequenceRuleViewModel()
             {
                 Delimiter = delimiter,
+                Rules = ruleNames
+            };
+        }
+
+        public RuleOptionSequenceRuleViewModel ReadRuleOptionSequenceRule(ref Utf8JsonReader reader)
+        {
+            reader.Read();
+
+            (reader.TokenType == JsonTokenType.PropertyName).OrThrowJsonException();
+
+            var propertyName = reader.GetString();
+
+            (propertyName.ToLower() == nameof(RuleOptionSequenceRuleViewModel.Rules).ToLower()).OrThrowJsonException();
+
+            reader.Read();
+
+            (reader.TokenType == JsonTokenType.StartArray).OrThrowJsonException();
+
+            var ruleNames = new List<string>();
+
+            reader.Read();
+
+            while (reader.TokenType != JsonTokenType.EndArray)
+            {
+                (reader.TokenType == JsonTokenType.String).OrThrowJsonException();
+
+                var ruleName = reader.GetString();
+
+                ruleNames.Add(ruleName);
+
+                reader.Read();
+            }
+
+            return new RuleOptionSequenceRuleViewModel()
+            {
                 Rules = ruleNames
             };
         }

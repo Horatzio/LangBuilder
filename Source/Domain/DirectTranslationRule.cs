@@ -4,6 +4,7 @@
     {
         public string InputSymbol { get; set; }
         public string OutputSymbol { get; set; }
+        public override RuleType Type => RuleType.DirectTranslation;
     }
 
     public class DirectTranslationRule : TranspilerRule

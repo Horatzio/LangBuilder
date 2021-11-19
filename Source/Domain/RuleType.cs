@@ -12,7 +12,8 @@ namespace LangBuilder.Source.Domain
         [SimpleRule]
         Expression = 1,
         Block = 2,
-        RuleSequence = 3
+        RuleSequence = 3,
+        RuleOptionSequence = 4
     }
 
     public static class RuleTypeExtensions

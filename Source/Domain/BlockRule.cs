@@ -7,6 +7,7 @@ namespace LangBuilder.Source.Domain
         public string BlockStart { get; set; }
         public string BlockBody { get; set; }
         public string BlockEnd { get; set; }
+        public override RuleType Type => RuleType.Block;
     }
 
     public class BlockRule : TranspilerRule

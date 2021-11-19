@@ -8,6 +8,7 @@ namespace LangBuilder.Source.Domain
     {
         public string Delimiter { get; set; }
         public IEnumerable<string> Rules { get; set; }
+        public override RuleType Type => RuleType.RuleSequence;
     }
 
     public class RuleSequenceRule : TranspilerRule

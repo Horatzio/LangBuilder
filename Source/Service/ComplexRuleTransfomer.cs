@@ -116,6 +116,11 @@ namespace LangBuilder.Source.Service
                     Rules = Rules.Where(r => viewModel.Rules.Contains(r.Name))
                         .ToArray()
                 },
+                RuleOptionSequenceRuleViewModel viewModel => new RuleOptionSequenceRule
+                {
+                    Name = model.Name,
+                    Rules = Rules.Where(r => viewModel.Rules.Contains(r.Name))
+                },
                 _ => throw new ApplicationException("Undefined complex rule")
             };
         }

@@ -3,6 +3,7 @@
     public class ExpressionRuleViewModel : TranspilerRuleViewModel
     {
         public string Expression { get; set; }
+        public override RuleType Type => RuleType.Expression;
     }
 
     public class ExpressionRule : TranspilerRule
