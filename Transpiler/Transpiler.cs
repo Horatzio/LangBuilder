@@ -18,7 +18,8 @@ namespace Transpiler
 
         public static void Main(string[] args)
         {
-            if(args.Length >= 1 && args[0] == Options.HelpOption){
+            if (args.Length >= 1 && args[0] == Options.HelpOption)
+            {
                 Console.WriteLine(HelpText);
                 return;
             }
