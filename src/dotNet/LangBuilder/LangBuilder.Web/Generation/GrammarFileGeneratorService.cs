@@ -13,12 +13,12 @@ namespace LangBuilder.Source.Service
     {
         private readonly GeneratorConfiguration _configuration;
 
-        public GrammarFileGeneratorService(IOptions<GeneratorConfiguration> configuration)
+        public GrammarFileGeneratorService(GeneratorConfiguration configuration)
         {
-            _configuration = configuration.Value;
+            _configuration = configuration;
         }
 
-        public async Task<IRazorEngineService> CreateRazorEngineService()
+        public IRazorEngineService CreateRazorEngineService()
         {
             var templateManager = new ResolvePathTemplateManager(new List<string>());
 
@@ -32,7 +32,7 @@ namespace LangBuilder.Source.Service
         {
             var grammarFilePath = _configuration.GrammarFilePath;
 
-            var service = await CreateRazorEngineService();
+            var service = CreateRazorEngineService();
 
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
 

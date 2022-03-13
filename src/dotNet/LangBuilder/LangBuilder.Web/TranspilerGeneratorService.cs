@@ -2,23 +2,21 @@
 using LangBuilder.Source.Models;
 using LangBuilder.Source.Service;
 
-namespace LangBuilder.Web.src
+namespace LangBuilder.Web
 {
     public class TranspilerGeneratorService
     {
         private readonly AntlrGeneratorService _antlrGeneratorService;
         private readonly ExecutableGeneratorService _executableGeneratorService;
-        private readonly GeneratorConfiguration _generatorConfiguration;
         private readonly GrammarFileGeneratorService _grammarFileGeneratorService;
         private readonly TranspilerRuleService _transpilerRuleService;
 
-        public TranspilerGeneratorService(AntlrGeneratorService antlrGeneratorService, ExecutableGeneratorService executableGeneratorService, IOptions<GeneratorConfiguration> generatorConfigurationOptions, GrammarFileGeneratorService grammarFileGeneratorService, TranspilerRuleService transpilerRuleService)
+        public TranspilerGeneratorService(AntlrGeneratorService antlrGeneratorService, ExecutableGeneratorService executableGeneratorService, GrammarFileGeneratorService grammarFileGeneratorService, TranspilerRuleService transpilerRuleService)
         {
             _antlrGeneratorService = antlrGeneratorService;
             _executableGeneratorService = executableGeneratorService;
             _grammarFileGeneratorService = grammarFileGeneratorService;
             _transpilerRuleService = transpilerRuleService;
-            _generatorConfiguration = generatorConfigurationOptions.Value;
         }
 
         public async Task<object> TestGenerateTranspiler(TranspilerViewModel viewModel)

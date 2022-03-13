@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Generation\GrammarFileTemplate.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	 <EmbeddedResource Include="Generation\GrammarFileTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="JsonSubTypes" Version="1.8.0" />
     <PackageReference Include="Microsoft.Build" Version="16.11.0" />
@@ -22,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="src\Generation\GrammarFileTemplate.cshtml">
+    <Content Update="Config\generatorsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

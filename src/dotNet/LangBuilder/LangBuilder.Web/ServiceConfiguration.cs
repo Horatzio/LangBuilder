@@ -1,5 +1,4 @@
 ﻿using LangBuilder.Source.Service;
-using System.Configuration;
 
 namespace LangBuilder.Web
 {
@@ -7,11 +6,13 @@ namespace LangBuilder.Web
     {
         public static void Configure(this IServiceCollection services)
         {
-            services.Configure<GeneratorConfiguration>();
+            services.AddSingleton<GeneratorConfigurationFactory>();
+            services.AddSingleton((provider) => provider.GetRequiredService<GeneratorConfigurationFactory>().Build());
             services.AddSingleton<AntlrGeneratorService>();
             services.AddSingleton<ExecutableGeneratorService>();
             services.AddSingleton<GrammarFileGeneratorService>();
             services.AddSingleton<TranspilerRuleService>();
+            services.AddSingleton<TranspilerGeneratorService>();
         }
     }
 }

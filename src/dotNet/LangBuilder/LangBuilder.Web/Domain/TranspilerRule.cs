@@ -13,7 +13,7 @@ namespace LangBuilder.Source.Domain
     public class TranspilerRuleViewModel
     {
         public string Name { get; set; }
-        public virtual RuleType Type { get; }
+        public virtual RuleType Type { get; set; }
     }
 
     public abstract class TranspilerRule

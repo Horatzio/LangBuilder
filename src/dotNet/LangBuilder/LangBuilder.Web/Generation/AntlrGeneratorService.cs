@@ -1,20 +1,17 @@
 ﻿using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using LangBuilder.Models;
-using Microsoft.Extensions.Options;
 
 namespace LangBuilder.Source.Service
 {
     public class AntlrGeneratorService
     {
         private readonly GeneratorConfiguration _configuration;
-        public AntlrGeneratorService(IOptions<GeneratorConfiguration> configuration)
+        public AntlrGeneratorService(GeneratorConfiguration configuration)
         {
-            _configuration = configuration.Value;
+            _configuration = configuration;
         }
 
-        public async Task ClearOutputDirectory(string antlrOutputPath)
+        public void ClearOutputDirectory(string antlrOutputPath)
         {
             var directory = new DirectoryInfo(antlrOutputPath);
 
@@ -33,7 +30,7 @@ namespace LangBuilder.Source.Service
 
         public async Task<AntlrGenerateOutputModel> GenerateAntlrFiles()
         {
-            await ClearOutputDirectory(_configuration.AntlrOutputPath);
+            ClearOutputDirectory(_configuration.AntlrOutputPath);
 
             var arguments = string.Format(_configuration.AntlrCommandLine, _configuration.GrammarFilePath,
                 _configuration.AntlrOutputPath);

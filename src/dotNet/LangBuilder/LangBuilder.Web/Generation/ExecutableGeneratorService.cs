@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using LangBuilder.Models;
 using LangBuilder.Source.Domain;
 using LangBuilder.Source.Extensions;
@@ -14,7 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.Extensions.Options;
 
 namespace LangBuilder.Source.Service
 {
@@ -22,9 +16,9 @@ namespace LangBuilder.Source.Service
     {
         private readonly GeneratorConfiguration _generatorConfiguration;
 
-        public ExecutableGeneratorService(IOptions<GeneratorConfiguration> configuration)
+        public ExecutableGeneratorService(GeneratorConfiguration configuration)
         {
-            _generatorConfiguration = configuration.Value;
+            _generatorConfiguration = configuration;
         }
 
         public async Task<GenerateExecutableOutputModel> GenerateExecutable(TranspilerModel model)
