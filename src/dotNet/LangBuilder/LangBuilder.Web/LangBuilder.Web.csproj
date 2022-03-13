@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0ca6ae9d-0db7-4e41-a230-28dce715a34b</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="JsonSubTypes" Version="1.8.0" />
+    <PackageReference Include="Microsoft.Build" Version="16.11.0" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="16.11.0" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.11.0" />
+    <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="src\Generation\GrammarFileTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
