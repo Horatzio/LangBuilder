@@ -1,1 +1,1 @@
-helloAB
+construct Test [ ]

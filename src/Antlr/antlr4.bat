@@ -1,1 +1,1 @@
-java -jar C:\Studythings\LangBuilder\ANTLR\antlr-4.9.2-complete.jar %*
+java -jar .\antlr-4.9.2-complete.jar %*

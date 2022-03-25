@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using LangBuilder.Source.Domain;
-using Microsoft.Extensions.Options;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
+﻿using LangBuilder.Source.Domain;
+using LangBuilder.Source.Extensions;
+using Scriban;
+using Scriban.Runtime;
 
 namespace LangBuilder.Source.Service
 {
@@ -18,31 +14,21 @@ namespace LangBuilder.Source.Service
             _configuration = configuration;
         }
 
-        public IRazorEngineService CreateRazorEngineService()
-        {
-            var templateManager = new ResolvePathTemplateManager(new List<string>());
-
-            var config = new TemplateServiceConfiguration();
-            config.TemplateManager = templateManager;
-
-            return RazorEngineService.Create(config);
-        }
-
         public async Task GenerateGrammarFile(TranspilerModel model)
         {
             var grammarFilePath = _configuration.GrammarFilePath;
 
-            var service = CreateRazorEngineService();
+            var templatePath = "Generation/GrammarFileTemplate.g4";
+            var templateContent = File.ReadAllText(templatePath);
 
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var scriptObj = new ScriptObject();
+            scriptObj.Import("toCamel", new Func<string, string>((s) => s.ToLowercaseFirstLetter()));
+            scriptObj.Add("model", model);
+            var template = Template.Parse(templateContent);
 
-            var templatePath = Path.Combine(basePath, "Source", "Service", "GrammarFileTemplate.cshtml");
-
-            var result = service.RunCompile(
-                templatePath,
-                typeof(TranspilerModel),
-                model
-            );
+            var context = new TemplateContext();
+            context.PushGlobal(scriptObj);
+            var result = template.Render(context);
 
             await File.WriteAllTextAsync(grammarFilePath, result);
         }

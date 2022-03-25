@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using LangBuilder.Source.Domain;
 
 namespace LangBuilder.Source.Service
@@ -94,6 +91,7 @@ namespace LangBuilder.Source.Service
             {
                 BlockRuleViewModel viewModel => new []{ viewModel.BlockStart, viewModel.BlockBody, viewModel.BlockEnd },
                 RuleSequenceRuleViewModel viewModel => viewModel.Rules,
+                RuleOptionSequenceRuleViewModel viewModel => viewModel.Rules,
                 _ => throw new ApplicationException("Undefined complex rule")
             };
         }
@@ -105,6 +103,7 @@ namespace LangBuilder.Source.Service
                 BlockRuleViewModel viewModel => new BlockRule
                 {
                     Name = model.Name,
+                    IsStatement = model.IsStatement,
                     BlockStart = Rules.First(r => r.Name == viewModel.BlockStart),
                     BlockBody = Rules.First(r => r.Name == viewModel.BlockBody),
                     BlockEnd = Rules.First(r => r.Name == viewModel.BlockEnd)
@@ -112,14 +111,16 @@ namespace LangBuilder.Source.Service
                 RuleSequenceRuleViewModel viewModel => new RuleSequenceRule
                 {
                     Name = model.Name,
+                    IsStatement = model.IsStatement,
                     Delimiter = viewModel.Delimiter,
-                    Rules = Rules.Where(r => viewModel.Rules.Contains(r.Name))
+                    Rules = viewModel.Rules.Select(rn => Rules.FirstOrDefault(r => r.Name == rn))
                         .ToArray()
                 },
                 RuleOptionSequenceRuleViewModel viewModel => new RuleOptionSequenceRule
                 {
                     Name = model.Name,
-                    Rules = Rules.Where(r => viewModel.Rules.Contains(r.Name))
+                    IsStatement = model.IsStatement,
+                    Rules = viewModel.Rules.Select(rn => Rules.FirstOrDefault(r => r.Name == rn))
                 },
                 _ => throw new ApplicationException("Undefined complex rule")
             };

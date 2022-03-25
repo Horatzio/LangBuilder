@@ -1,1 +1,1 @@
-hello2ab2
+public class Test { }

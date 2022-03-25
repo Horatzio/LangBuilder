@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace LangBuilder.Models
+﻿namespace LangBuilder.Models
 {
     public class GenerateExecutableOutputModel
     {

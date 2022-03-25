@@ -4,16 +4,23 @@ options {
     language = 'CSharp';
 }
 
+Newline: ('\r' '\n'? | '\n') -> skip;
+Whitespace: [ \t]+ -> skip;
+Label: [a-zA-Z0-9]+;
+
 program: statement+ EOF;
 
-statement: Construct | Label | BlockStart | BlockEnd | BlockStartSeparator | Anything | ConstructDeclarationBlockStart | ConstructDeclaration;
+statement: constructDeclaration;
 
-Construct: 'construct';
-Label: '[a-zA-Z0-9_]+';
-BlockStart: '[';
-BlockEnd: ']';
-BlockStartSeparator: '(' ' | '
-')*';
-Anything: '.+';
-ConstructDeclarationBlockStart: Construct Label BlockStart BlockStartSeparator;
-ConstructDeclaration: ConstructDeclarationBlockStart Anything BlockEnd;
+construct: 'construct';
+
+label: Label;
+
+blockStart: '[';
+
+blockEnd: ']';
+
+constructDeclarationBlockStart: construct label blockStart;
+
+constructDeclaration: constructDeclarationBlockStart blockEnd;
+

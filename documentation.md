@@ -13,3 +13,7 @@ Implementation details:
 - .NET back-end
 - C# code generates parser using ANTLR executable
 - C# code generates C# code for the application - Compile C# code into an executable
+
+Transpiler Executables are run using
+
+`dotnet .\java.exe -i input.txt -o output.txt`

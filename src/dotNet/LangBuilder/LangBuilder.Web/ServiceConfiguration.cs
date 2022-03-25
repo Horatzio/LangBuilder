@@ -6,8 +6,8 @@ namespace LangBuilder.Web
     {
         public static void Configure(this IServiceCollection services)
         {
-            services.AddSingleton<GeneratorConfigurationFactory>();
-            services.AddSingleton((provider) => provider.GetRequiredService<GeneratorConfigurationFactory>().Build());
+            services.AddSingleton<GeneratorConfigurationBuilder>();
+            services.AddSingleton((provider) => provider.GetRequiredService<GeneratorConfigurationBuilder>().Build());
             services.AddSingleton<AntlrGeneratorService>();
             services.AddSingleton<ExecutableGeneratorService>();
             services.AddSingleton<GrammarFileGeneratorService>();

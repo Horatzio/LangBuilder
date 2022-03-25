@@ -5,10 +5,10 @@ namespace LangBuilder.Source.Service
 {
     public class AntlrGeneratorService
     {
-        private readonly GeneratorConfiguration _configuration;
+        private readonly GeneratorConfiguration configuration;
         public AntlrGeneratorService(GeneratorConfiguration configuration)
         {
-            _configuration = configuration;
+            this.configuration = configuration;
         }
 
         public void ClearOutputDirectory(string antlrOutputPath)
@@ -30,18 +30,23 @@ namespace LangBuilder.Source.Service
 
         public async Task<AntlrGenerateOutputModel> GenerateAntlrFiles()
         {
-            ClearOutputDirectory(_configuration.AntlrOutputPath);
+            ClearOutputDirectory(configuration.AntlrOutputPath);
 
-            var arguments = string.Format(_configuration.AntlrCommandLine, _configuration.GrammarFilePath,
-                _configuration.AntlrOutputPath);
+            var arguments = string.Format(configuration.AntlrCommandLine, configuration.GrammarFilePath,
+                configuration.AntlrOutputPath);
 
-            var processStartInfo = new ProcessStartInfo(_configuration.AntlrPath, arguments)
+            var processStartInfo = new ProcessStartInfo(configuration.AntlrPath, arguments)
             {
                 RedirectStandardOutput = true, 
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                WorkingDirectory = Path.GetDirectoryName(configuration.AntlrPath)
             };
 
             using var process = Process.Start(processStartInfo);
+
+            if (process == null)
+                throw new ApplicationException("Process did not start successfully");
+
             process.WaitForExit();
 
             var exitCode = process.ExitCode;

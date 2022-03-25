@@ -22,23 +22,14 @@ namespace Transpiler
             return "}";
         }
 
-        public override string VisitBlockStartSeparator(TranspilerGrammarParser.BlockStartSeparatorContext context)
-        {
-            return context.GetText();
-        }
-
-        public override string VisitAnything(TranspilerGrammarParser.AnythingContext context)
-        {
-            return context.GetText();
-        }
-
         public override string VisitConstructDeclarationBlockStart(TranspilerGrammarParser.ConstructDeclarationBlockStartContext context)
         {
-            return context.construct() + context.label() + context.blockStart() + context.blockStartSeparator()}
+            return Visit(context.construct()) + " " + Visit(context.label()) + " " + Visit(context.blockStart());
+        }
 
         public override string VisitConstructDeclaration(TranspilerGrammarParser.ConstructDeclarationContext context)
         {
-            return context.anything() + context.anything() + context.blockEnd();
+            return Visit(context.constructDeclarationBlockStart()) + " " + Visit(context.blockEnd());
         }
     }
 }

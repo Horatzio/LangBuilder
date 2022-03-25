@@ -21,17 +21,20 @@ namespace LangBuilder.Web
 
         public async Task<object> TestGenerateTranspiler(TranspilerViewModel viewModel)
         {
-            viewModel.GrammarName = "TranspilerGrammar";
-
             var model = new TranspilerModel
             {
                 GrammarName = "TranspilerGrammar",
                 Name = viewModel.Name,
-                Rules = await _transpilerRuleService.ProcessRules(viewModel.RuleSet)
+                Rules = _transpilerRuleService.ProcessRules(viewModel.Rules)
             };
 
             await _grammarFileGeneratorService.GenerateGrammarFile(model);
             var antlrResult = await _antlrGeneratorService.GenerateAntlrFiles();
+
+            if (antlrResult.ExitCode != 0)
+                return new {
+                    antlrResult = antlrResult
+                };
 
             var executableResult = await _executableGeneratorService.GenerateExecutable(model);
 

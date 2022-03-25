@@ -1,7 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using LangBuilder.Models;
 using LangBuilder.Source.Domain;
 using LangBuilder.Source.Extensions;
@@ -14,38 +11,34 @@ namespace LangBuilder.Source.Service
 {
     public class ExecutableGeneratorService
     {
-        private readonly GeneratorConfiguration _generatorConfiguration;
+        private readonly GeneratorConfiguration generatorConfiguration;
 
         public ExecutableGeneratorService(GeneratorConfiguration configuration)
         {
-            _generatorConfiguration = configuration;
+            generatorConfiguration = configuration;
         }
 
         public async Task<GenerateExecutableOutputModel> GenerateExecutable(TranspilerModel model)
         {
-            var grammarName = $"{model.GrammarName}";
+            var grammarName = "TranspilerGrammar";
+            var transpilerProjectPath = generatorConfiguration.TranspilerProjectPath;
+            var transpilerProjectFilePath = Path.Combine(transpilerProjectPath, "Transpiler.csproj");
+            var executablePath = Path.Combine(Path.GetDirectoryName(generatorConfiguration.ExecutablePath), $"{model.Name}{Path.GetExtension(generatorConfiguration.ExecutablePath)}");
 
-            var transpilerProgramPath = _generatorConfiguration.TranspilerProgramPath;
 
-            var transpilerProjectPath = Path.Combine(transpilerProgramPath, "Transpiler.csproj");
-
-            var executablePath = Path.Combine(Path.GetDirectoryName(_generatorConfiguration.ExecutablePath), $"{model.Name}{Path.GetExtension(_generatorConfiguration.ExecutablePath)}");
-
-            GenerateConcreteVisitorImplementations(grammarName, transpilerProgramPath, model.Rules);
+            GenerateConcreteVisitorImplementations(grammarName, transpilerProjectPath, model.Rules);
 
             using var workspace = MSBuildWorkspace.Create();
-
-            var project = await workspace.OpenProjectAsync(transpilerProjectPath);
+            var project = await workspace.OpenProjectAsync(transpilerProjectFilePath);
+            project = EnsureSourcesInProject(project, transpilerProjectPath);
 
             var compilation = await project.GetCompilationAsync();
 
+
             var GCSettingsAssembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location;
-
             var dotNetCoreDir = Path.GetDirectoryName(GCSettingsAssembly);
-
             var netstandard = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "netstandard");
-
-            var antlrRuntimePath = Path.Combine(transpilerProgramPath, "Antlr4.Runtime.Standard.dll");
+            var antlrRuntimePath = Path.Combine(transpilerProjectPath, "Antlr4.Runtime.Standard.dll");
 
             compilation = compilation
                 .AddReferences(
@@ -57,32 +50,55 @@ namespace LangBuilder.Source.Service
                     MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Runtime.Extensions.dll")),
                     MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Linq.dll")),
                     MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Collections.dll")),
+                    MetadataReference.CreateFromFile(Path.Combine(dotNetCoreDir, "System.Private.CoreLib.dll")),
                     MetadataReference.CreateFromFile(antlrRuntimePath)
                 );
 
             var result = compilation.Emit(executablePath);
-            
+
+            if (!result.Success)
+                return ResultToOutputModel(result);
+
             var runtimeConfig = GenerateRuntimeConfig();
             await File.WriteAllTextAsync(Path.ChangeExtension(executablePath, ".runtimeconfig.json"), runtimeConfig);
+            return ResultToOutputModel(result);
 
-            return new GenerateExecutableOutputModel
+            static GenerateExecutableOutputModel ResultToOutputModel(Microsoft.CodeAnalysis.Emit.EmitResult result)
             {
-                Success = result.Success,
-                Errors = result.Diagnostics.Select(d => new GenerateExecutableDiagnosticError
+                return new GenerateExecutableOutputModel
                 {
-                    Severity = d.Severity.ToString(),
-                    ErrorId = d.Descriptor.Id,
-                    Description = d.Descriptor.Category,
-                    Message = d.GetMessage(),
-                    Location = new GenerateExecutableDiagnosticErrorLocation
+                    Success = result.Success,
+                    Errors = result.Diagnostics.Select(d => new GenerateExecutableDiagnosticError
                     {
-                        StartLine = d.Location.GetLineSpan().StartLinePosition.Line,
-                        StartPosition = d.Location.GetLineSpan().StartLinePosition.Character,
-                        EndLine = d.Location.GetLineSpan().EndLinePosition.Line,
-                        EndPosition = d.Location.GetLineSpan().EndLinePosition.Character
-                    }
-                })
-            };
+                        Severity = d.Severity.ToString(),
+                        ErrorId = d.Descriptor.Id,
+                        Description = d.Descriptor.Category,
+                        Message = d.GetMessage(),
+                        Location = new GenerateExecutableDiagnosticErrorLocation
+                        {
+                            StartLine = d.Location.GetLineSpan().StartLinePosition.Line,
+                            StartPosition = d.Location.GetLineSpan().StartLinePosition.Character,
+                            EndLine = d.Location.GetLineSpan().EndLinePosition.Line,
+                            EndPosition = d.Location.GetLineSpan().EndLinePosition.Character
+                        }
+                    })
+                };
+            }
+        }
+
+        private Project EnsureSourcesInProject(Project project, string transpilerProjectPath)
+        {
+            var files = Directory.GetFiles(transpilerProjectPath, "*.cs", SearchOption.TopDirectoryOnly)
+                .Concat(Directory.GetFiles(Path.Combine(transpilerProjectPath, "Output"), "*.cs", SearchOption.TopDirectoryOnly));
+
+            var unincludedFiles = files.Where(f => !project.Documents.Any(d => d.Name == Path.GetFileName(f)));
+
+            foreach(var file in files)
+            {
+                project = project.AddDocument(Path.GetFileName(file), File.ReadAllText(file)).Project;
+            }
+
+            return project;
         }
 
         private void GenerateConcreteVisitorImplementations(string grammarName, string transpilerProgramPath, IEnumerable<TranspilerRule> rules)
@@ -147,27 +163,7 @@ namespace LangBuilder.Source.Service
 
         private static string GenerateRuntimeConfig()
         {
-            using var stream = new MemoryStream();
-            using var writer = new Utf8JsonWriter(
-                stream,
-                new JsonWriterOptions {Indented = true}
-            );
-
-            writer.WriteStartObject();
-            writer.WriteStartObject("runtimeOptions");
-            writer.WriteStartObject("framework");
-            writer.WriteString("name", "Microsoft.NETCore.App");
-            writer.WriteString(
-                "version",
-                RuntimeInformation.FrameworkDescription.Replace(".NET Core ", "")
-            );
-            writer.WriteEndObject();
-            writer.WriteEndObject();
-            writer.WriteEndObject();
-
-            writer.Flush();
-
-            return Encoding.UTF8.GetString(stream.ToArray());
+            return File.ReadAllText("Generation/.runtimeconfig.json");
         }
     }
 }
