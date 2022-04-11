@@ -20,7 +20,7 @@ const defaultBuilderContextProps: BuilderContextProps = {
   removeRule: defaultMethod,
 };
 
-const BuilderContext = createContext(defaultBuilderContextProps);
+export const BuilderContext = createContext(defaultBuilderContextProps);
 
 const BuilderContextProvider: React.FC = (props) => {
   const [state, dispatch] = useBuilderReducer();

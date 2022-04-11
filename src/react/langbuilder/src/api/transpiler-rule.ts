@@ -1,10 +1,4 @@
-import {
-  RuleType,
-  DirectTranslation,
-  Expression,
-  RuleOptionSequence,
-  RuleSequence,
-} from "./rule-type";
+import { RuleType } from "./rule-type";
 
 export interface TranspilerRule {
   type: RuleType;
@@ -13,13 +7,13 @@ export interface TranspilerRule {
 }
 
 export interface DirectTranslationRule extends TranspilerRule {
-  type: DirectTranslation;
+  type: RuleType.DirectTranslation;
   inputSymbol: string;
   outputSymbol: string;
 }
 
 export interface ExpressionRule extends TranspilerRule {
-  type: Expression;
+  type: RuleType.Expression;
   expression: string;
 }
 
@@ -27,16 +21,16 @@ export const LabelRule: ExpressionRule = {
   expression: "Label",
   name: "label",
   isStatement: false,
-  type: "Expression",
+  type: RuleType.Expression,
 };
 
 export interface RuleOptionSequenceRule extends TranspilerRule {
-  type: RuleOptionSequence;
+  type: RuleType.RuleOptionSequence;
   rules: TranspilerRule[];
 }
 
 export interface RuleSequenceRule extends TranspilerRule {
-  type: RuleSequence;
+  type: RuleType.RuleSequence;
   delimiter: string;
   rules: TranspilerRule[];
 }

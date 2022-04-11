@@ -27,7 +27,7 @@ const reducer = (state: State, action: Actions) => {
     case "REMOVE_RULE": {
       return {
         ...state,
-        rules: [...state.rules.filter((r) => r.name != action.ruleName)],
+        rules: [...state.rules.filter((r) => r.name !== action.ruleName)],
       };
     }
     default:
