@@ -21,7 +21,7 @@ const reducer = (state: State, action: Actions) => {
     case "ADD_RULE": {
       return {
         ...state,
-        rules: [...state.rules, action.rule],
+        rules: [...state.rules, { ...action.rule }],
       };
     }
     case "REMOVE_RULE": {

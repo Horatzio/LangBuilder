@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { TranspilerRule } from "../../api/transpiler-rule";
-import { useBuilderReducer } from "./bulder.reducer";
+import { useBuilderReducer } from "./builder.reducer";
 
 interface BuilderContextProps {
   name: string;
