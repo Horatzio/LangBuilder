@@ -1,7 +1,7 @@
 import { RadioGroup } from "@headlessui/react";
 import { useContext, useState } from "react";
-import { TranspilerRule } from "../api/transpiler-rule";
-import { BuilderContext } from "./transpiler-builder/BuilderContextProvider";
+import { TranspilerRule } from "../../api/transpiler-rule";
+import { BuilderContext } from "./BuilderContextProvider";
 import { BsFillInboxFill } from "react-icons/bs";
 
 interface RuleListItemProps {
@@ -49,7 +49,7 @@ const RuleList: React.FC = () => {
               </div>
             </RadioGroup>
           ) : (
-            <div>
+            <div className="flex flex-col place-items-center align-center">
               <BsFillInboxFill />
               <p>No rules</p>
             </div>

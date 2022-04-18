@@ -7,6 +7,7 @@ interface BuilderContextProps {
   rules: TranspilerRule[];
   addRule: (rule: TranspilerRule) => void;
   removeRule: (ruleName: string) => void;
+  changeName: (newName: string) => void;
 }
 
 const defaultMethod = () => {
@@ -18,6 +19,7 @@ const defaultBuilderContextProps: BuilderContextProps = {
   rules: [],
   addRule: defaultMethod,
   removeRule: defaultMethod,
+  changeName: defaultMethod,
 };
 
 export const BuilderContext = createContext(defaultBuilderContextProps);
@@ -25,19 +27,16 @@ export const BuilderContext = createContext(defaultBuilderContextProps);
 const BuilderContextProvider: React.FC = (props) => {
   const [state, dispatch] = useBuilderReducer();
 
-  const addRule = (rule: TranspilerRule) =>
-    dispatch({ type: "ADD_RULE", rule });
-
-  const removeRule = (ruleName: string) =>
-    dispatch({ type: "REMOVE_RULE", ruleName });
-
   return (
     <BuilderContext.Provider
       value={{
         name: state.name,
         rules: state.rules,
-        addRule,
-        removeRule,
+        addRule: (rule: TranspilerRule) => dispatch({ type: "ADD_RULE", rule }),
+        removeRule: (ruleName: string) =>
+          dispatch({ type: "REMOVE_RULE", ruleName }),
+        changeName: (newName: string) =>
+          dispatch({ type: "CHANGE_NAME", newName }),
       }}
     >
       {props.children}

@@ -14,6 +14,10 @@ type Actions =
   | {
       type: "REMOVE_RULE";
       ruleName: string;
+    }
+  | {
+      type: "CHANGE_NAME";
+      newName: string;
     };
 
 const reducer = (state: State, action: Actions) => {
@@ -28,6 +32,12 @@ const reducer = (state: State, action: Actions) => {
       return {
         ...state,
         rules: [...state.rules.filter((r) => r.name !== action.ruleName)],
+      };
+    }
+    case "CHANGE_NAME": {
+      return {
+        ...state,
+        name: action.newName,
       };
     }
     default:

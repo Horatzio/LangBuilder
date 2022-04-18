@@ -1,6 +1,6 @@
-import TranspilerBuilder from "../components/TranspilerBuilder";
+import TranspilerBuilder from "../components/transpiler-builder/TranspilerBuilder";
 
 const Builder: React.FC = () => {
-  return <TranspilerBuilder></TranspilerBuilder>;
+  return <TranspilerBuilder />;
 };
 export default Builder;
