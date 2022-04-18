@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { TranspilerRule } from "../../api/transpiler-rule";
 import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
 
 interface RuleSet {
   name: string;
@@ -12,7 +13,7 @@ const TranspilerRunner: React.FC = () => {
   const [sourceText, setSourceText] = useState("");
 
   const getHighlightedSourceText = useCallback(() => {
-    const result = hljs.highlight(sourceText, { language: "cpp" });
+    const result = hljs.highlight(sourceText, { language: "c" });
     return result.value;
   }, [sourceText]);
 
@@ -58,7 +59,9 @@ const TranspilerRunner: React.FC = () => {
                 onChange={({ target: { value } }) => setSourceText(value)}
                 value={sourceText}
               />
-              <p>{getHighlightedSourceText()}</p>
+              <p
+                dangerouslySetInnerHTML={{ __html: getHighlightedSourceText() }}
+              ></p>
             </div>
             <div className="flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
               <text className="h-25">asfasf</text>
