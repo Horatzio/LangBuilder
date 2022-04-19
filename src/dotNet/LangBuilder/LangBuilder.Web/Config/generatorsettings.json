@@ -1,6 +1,5 @@
 ﻿{
     "antlrCommandLine": "{0} -o {1} -Xexact-output-dir -no-listener -visitor",
     "antlrPath": "C:/Studythings/LangBuilder/src/Antlr/antlr4.bat",
-    "transpilerProjectPath": "C:/Studythings/LangBuilder/src/dotNet/LangBuilder/Transpiler",
-    "executablePath": "C:/Studythings/LangBuilder/src/test/.exe"
+    "transpilerProjectPath": "C:/Studythings/LangBuilder/src/dotNet/LangBuilder/Transpiler"
 }

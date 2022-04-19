@@ -44,39 +44,9 @@ public interface ITranspilerGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] TranspilerGrammarParser.StatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.construct"/>.
+	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.cattopotat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConstruct([NotNull] TranspilerGrammarParser.ConstructContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.label"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLabel([NotNull] TranspilerGrammarParser.LabelContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.blockStart"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBlockStart([NotNull] TranspilerGrammarParser.BlockStartContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.blockEnd"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBlockEnd([NotNull] TranspilerGrammarParser.BlockEndContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.constructDeclarationBlockStart"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitConstructDeclarationBlockStart([NotNull] TranspilerGrammarParser.ConstructDeclarationBlockStartContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TranspilerGrammarParser.constructDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitConstructDeclaration([NotNull] TranspilerGrammarParser.ConstructDeclarationContext context);
+	Result VisitCattopotat([NotNull] TranspilerGrammarParser.CattopotatContext context);
 }

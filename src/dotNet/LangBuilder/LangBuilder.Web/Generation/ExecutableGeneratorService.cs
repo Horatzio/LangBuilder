@@ -18,13 +18,11 @@ namespace LangBuilder.Source.Service
             generatorConfiguration = configuration;
         }
 
-        public async Task<GenerateExecutableOutputModel> GenerateExecutable(TranspilerModel model)
+        public async Task<GenerateExecutableOutputModel> GenerateExecutable(TranspilerModel model, string executablePath)
         {
             var grammarName = "TranspilerGrammar";
             var transpilerProjectPath = generatorConfiguration.TranspilerProjectPath;
             var transpilerProjectFilePath = Path.Combine(transpilerProjectPath, "Transpiler.csproj");
-            var executablePath = Path.Combine(Path.GetDirectoryName(generatorConfiguration.ExecutablePath), $"{model.Name}{Path.GetExtension(generatorConfiguration.ExecutablePath)}");
-
 
             GenerateConcreteVisitorImplementations(grammarName, transpilerProjectPath, model.Rules);
 

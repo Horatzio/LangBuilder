@@ -28,8 +28,6 @@ namespace LangBuilder
         public string GrammarFilePath => $"{model.transpilerProjectPath}/Grammar/TranspilerGrammar.g4";
 
         public string AntlrOutputPath => $"{model.transpilerProjectPath}/Output";
-
-        public string ExecutablePath => model.executablePath;
     }
 
     public class GeneratorConfigurationBuilder

@@ -36,21 +36,18 @@ public partial class TranspilerGrammarParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		T__0=1, T__1=2, T__2=3, Newline=4, Whitespace=5, Label=6;
+		T__0=1, Newline=2, Whitespace=3, Label=4;
 	public const int
-		RULE_program = 0, RULE_statement = 1, RULE_construct = 2, RULE_label = 3, 
-		RULE_blockStart = 4, RULE_blockEnd = 5, RULE_constructDeclarationBlockStart = 6, 
-		RULE_constructDeclaration = 7;
+		RULE_program = 0, RULE_statement = 1, RULE_cattopotat = 2;
 	public static readonly string[] ruleNames = {
-		"program", "statement", "construct", "label", "blockStart", "blockEnd", 
-		"constructDeclarationBlockStart", "constructDeclaration"
+		"program", "statement", "cattopotat"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'construct'", "'['", "']'"
+		null, "'cat'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, "Newline", "Whitespace", "Label"
+		null, null, "Newline", "Whitespace", "Label"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -113,21 +110,21 @@ public partial class TranspilerGrammarParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 17;
+			State = 7;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 16;
+				State = 6;
 				statement();
 				}
 				}
-				State = 19;
+				State = 9;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==T__0 );
-			State = 21;
+			State = 11;
 			Match(Eof);
 			}
 		}
@@ -143,8 +140,8 @@ public partial class TranspilerGrammarParser : Parser {
 	}
 
 	public partial class StatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ConstructDeclarationContext constructDeclaration() {
-			return GetRuleContext<ConstructDeclarationContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public CattopotatContext cattopotat() {
+			return GetRuleContext<CattopotatContext>(0);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -166,8 +163,8 @@ public partial class TranspilerGrammarParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 23;
-			constructDeclaration();
+			State = 13;
+			cattopotat();
 			}
 		}
 		catch (RecognitionException re) {
@@ -181,231 +178,29 @@ public partial class TranspilerGrammarParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ConstructContext : ParserRuleContext {
-		public ConstructContext(ParserRuleContext parent, int invokingState)
+	public partial class CattopotatContext : ParserRuleContext {
+		public CattopotatContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_construct; } }
+		public override int RuleIndex { get { return RULE_cattopotat; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitConstruct(this);
+			if (typedVisitor != null) return typedVisitor.VisitCattopotat(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ConstructContext construct() {
-		ConstructContext _localctx = new ConstructContext(Context, State);
-		EnterRule(_localctx, 4, RULE_construct);
+	public CattopotatContext cattopotat() {
+		CattopotatContext _localctx = new CattopotatContext(Context, State);
+		EnterRule(_localctx, 4, RULE_cattopotat);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 25;
+			State = 15;
 			Match(T__0);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class LabelContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Label() { return GetToken(TranspilerGrammarParser.Label, 0); }
-		public LabelContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_label; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitLabel(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public LabelContext label() {
-		LabelContext _localctx = new LabelContext(Context, State);
-		EnterRule(_localctx, 6, RULE_label);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 27;
-			Match(Label);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BlockStartContext : ParserRuleContext {
-		public BlockStartContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_blockStart; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBlockStart(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BlockStartContext blockStart() {
-		BlockStartContext _localctx = new BlockStartContext(Context, State);
-		EnterRule(_localctx, 8, RULE_blockStart);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 29;
-			Match(T__1);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BlockEndContext : ParserRuleContext {
-		public BlockEndContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_blockEnd; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBlockEnd(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BlockEndContext blockEnd() {
-		BlockEndContext _localctx = new BlockEndContext(Context, State);
-		EnterRule(_localctx, 10, RULE_blockEnd);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 31;
-			Match(T__2);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ConstructDeclarationBlockStartContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ConstructContext construct() {
-			return GetRuleContext<ConstructContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public LabelContext label() {
-			return GetRuleContext<LabelContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BlockStartContext blockStart() {
-			return GetRuleContext<BlockStartContext>(0);
-		}
-		public ConstructDeclarationBlockStartContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_constructDeclarationBlockStart; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitConstructDeclarationBlockStart(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ConstructDeclarationBlockStartContext constructDeclarationBlockStart() {
-		ConstructDeclarationBlockStartContext _localctx = new ConstructDeclarationBlockStartContext(Context, State);
-		EnterRule(_localctx, 12, RULE_constructDeclarationBlockStart);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 33;
-			construct();
-			State = 34;
-			label();
-			State = 35;
-			blockStart();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ConstructDeclarationContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ConstructDeclarationBlockStartContext constructDeclarationBlockStart() {
-			return GetRuleContext<ConstructDeclarationBlockStartContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BlockEndContext blockEnd() {
-			return GetRuleContext<BlockEndContext>(0);
-		}
-		public ConstructDeclarationContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_constructDeclaration; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ITranspilerGrammarVisitor<TResult> typedVisitor = visitor as ITranspilerGrammarVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitConstructDeclaration(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ConstructDeclarationContext constructDeclaration() {
-		ConstructDeclarationContext _localctx = new ConstructDeclarationContext(Context, State);
-		EnterRule(_localctx, 14, RULE_constructDeclaration);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 37;
-			constructDeclarationBlockStart();
-			State = 38;
-			blockEnd();
 			}
 		}
 		catch (RecognitionException re) {
@@ -421,35 +216,20 @@ public partial class TranspilerGrammarParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\b', '+', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', '\t', 
-		'\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', '\x6', 
-		'\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', '\x4', 
-		'\t', '\t', '\t', '\x3', '\x2', '\x6', '\x2', '\x14', '\n', '\x2', '\r', 
-		'\x2', '\xE', '\x2', '\x15', '\x3', '\x2', '\x3', '\x2', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x5', '\x3', '\x5', 
-		'\x3', '\x6', '\x3', '\x6', '\x3', '\a', '\x3', '\a', '\x3', '\b', '\x3', 
-		'\b', '\x3', '\b', '\x3', '\b', '\x3', '\t', '\x3', '\t', '\x3', '\t', 
-		'\x3', '\t', '\x2', '\x2', '\n', '\x2', '\x4', '\x6', '\b', '\n', '\f', 
-		'\xE', '\x10', '\x2', '\x2', '\x2', '#', '\x2', '\x13', '\x3', '\x2', 
-		'\x2', '\x2', '\x4', '\x19', '\x3', '\x2', '\x2', '\x2', '\x6', '\x1B', 
-		'\x3', '\x2', '\x2', '\x2', '\b', '\x1D', '\x3', '\x2', '\x2', '\x2', 
-		'\n', '\x1F', '\x3', '\x2', '\x2', '\x2', '\f', '!', '\x3', '\x2', '\x2', 
-		'\x2', '\xE', '#', '\x3', '\x2', '\x2', '\x2', '\x10', '\'', '\x3', '\x2', 
-		'\x2', '\x2', '\x12', '\x14', '\x5', '\x4', '\x3', '\x2', '\x13', '\x12', 
-		'\x3', '\x2', '\x2', '\x2', '\x14', '\x15', '\x3', '\x2', '\x2', '\x2', 
-		'\x15', '\x13', '\x3', '\x2', '\x2', '\x2', '\x15', '\x16', '\x3', '\x2', 
-		'\x2', '\x2', '\x16', '\x17', '\x3', '\x2', '\x2', '\x2', '\x17', '\x18', 
-		'\a', '\x2', '\x2', '\x3', '\x18', '\x3', '\x3', '\x2', '\x2', '\x2', 
-		'\x19', '\x1A', '\x5', '\x10', '\t', '\x2', '\x1A', '\x5', '\x3', '\x2', 
-		'\x2', '\x2', '\x1B', '\x1C', '\a', '\x3', '\x2', '\x2', '\x1C', '\a', 
-		'\x3', '\x2', '\x2', '\x2', '\x1D', '\x1E', '\a', '\b', '\x2', '\x2', 
-		'\x1E', '\t', '\x3', '\x2', '\x2', '\x2', '\x1F', ' ', '\a', '\x4', '\x2', 
-		'\x2', ' ', '\v', '\x3', '\x2', '\x2', '\x2', '!', '\"', '\a', '\x5', 
-		'\x2', '\x2', '\"', '\r', '\x3', '\x2', '\x2', '\x2', '#', '$', '\x5', 
-		'\x6', '\x4', '\x2', '$', '%', '\x5', '\b', '\x5', '\x2', '%', '&', '\x5', 
-		'\n', '\x6', '\x2', '&', '\xF', '\x3', '\x2', '\x2', '\x2', '\'', '(', 
-		'\x5', '\xE', '\b', '\x2', '(', ')', '\x5', '\f', '\a', '\x2', ')', '\x11', 
-		'\x3', '\x2', '\x2', '\x2', '\x3', '\x15',
+		'\x5964', '\x3', '\x6', '\x14', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x3', '\x2', '\x6', '\x2', '\n', 
+		'\n', '\x2', '\r', '\x2', '\xE', '\x2', '\v', '\x3', '\x2', '\x3', '\x2', 
+		'\x3', '\x3', '\x3', '\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', 
+		'\x2', '\x2', '\x5', '\x2', '\x4', '\x6', '\x2', '\x2', '\x2', '\x11', 
+		'\x2', '\t', '\x3', '\x2', '\x2', '\x2', '\x4', '\xF', '\x3', '\x2', '\x2', 
+		'\x2', '\x6', '\x11', '\x3', '\x2', '\x2', '\x2', '\b', '\n', '\x5', '\x4', 
+		'\x3', '\x2', '\t', '\b', '\x3', '\x2', '\x2', '\x2', '\n', '\v', '\x3', 
+		'\x2', '\x2', '\x2', '\v', '\t', '\x3', '\x2', '\x2', '\x2', '\v', '\f', 
+		'\x3', '\x2', '\x2', '\x2', '\f', '\r', '\x3', '\x2', '\x2', '\x2', '\r', 
+		'\xE', '\a', '\x2', '\x2', '\x3', '\xE', '\x3', '\x3', '\x2', '\x2', '\x2', 
+		'\xF', '\x10', '\x5', '\x6', '\x4', '\x2', '\x10', '\x5', '\x3', '\x2', 
+		'\x2', '\x2', '\x11', '\x12', '\a', '\x3', '\x2', '\x2', '\x12', '\a', 
+		'\x3', '\x2', '\x2', '\x2', '\x3', '\v',
 	};
 
 	public static readonly ATN _ATN =

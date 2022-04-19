@@ -19,7 +19,7 @@ namespace LangBuilder.Web
             _transpilerRuleService = transpilerRuleService;
         }
 
-        public async Task<object> TestGenerateTranspiler(TranspilerViewModel viewModel)
+        public async Task<object> GenerateTranspiler(TranspilerViewModel viewModel, string executablePath)
         {
             var model = new TranspilerModel
             {
@@ -36,7 +36,7 @@ namespace LangBuilder.Web
                     antlrResult = antlrResult
                 };
 
-            var executableResult = await _executableGeneratorService.GenerateExecutable(model);
+            var executableResult = await _executableGeneratorService.GenerateExecutable(model, executablePath);
 
             return new
             {

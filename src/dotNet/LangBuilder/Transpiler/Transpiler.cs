@@ -9,6 +9,7 @@ namespace Transpiler
         private static class Options
         {
             public const string HelpOption = "-h";
+            public const string ConsoleOption = "-c";
             public const string InputFileOption = "-i";
             public const string OutputFileOption = "-o";
         }
@@ -24,14 +25,19 @@ namespace Transpiler
                 return;
             }
 
+
             string inputFilePath = null;
             string outputFilePath = null;
             var sourceText = "";
+            bool isConsole = false;
 
             for (var i = 0; i < args.Length; i++)
             {
                 switch (args[i])
                 {
+                    case Options.ConsoleOption:
+                        isConsole = true;
+                        break;
                     case Options.InputFileOption:
                         inputFilePath = args[i + 1];
                         i++;
@@ -44,11 +50,15 @@ namespace Transpiler
                 }
             }
 
+            if (isConsole)
+            {
+                sourceText = Console.In.ReadToEnd();
+            }
             if (inputFilePath != null)
             {
                 if (!File.Exists(inputFilePath))
                 {
-                    Console.WriteLine($"{inputFilePath} does not exist");
+                    Console.Error.WriteLine($"{inputFilePath} does not exist");
                     return;
                 }
 
@@ -58,12 +68,14 @@ namespace Transpiler
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error reading from {inputFilePath}: {e.Message}");
+                    Console.Error.WriteLine($"Error reading from {inputFilePath}: {e.Message}");
+                    throw;
+
                 }
             }
             else
             {
-                Console.WriteLine("No input file path provided. Please provide one after the '-i' option");
+                Console.Error.WriteLine("No input file path provided. Please provide one after the '-i' option");
             }
 
             var output = Translate(sourceText);
@@ -76,12 +88,12 @@ namespace Transpiler
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error writing to {outputFilePath}: {e.Message}");
+                    Console.Error.WriteLine($"Error writing to {outputFilePath}: {e.Message}");
                 }
             }
             else
             {
-                Console.Write(output.ToCharArray());
+                Console.Write(output);
             }
         }
 

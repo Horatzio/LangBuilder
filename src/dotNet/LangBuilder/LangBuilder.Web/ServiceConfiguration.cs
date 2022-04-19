@@ -13,6 +13,7 @@ namespace LangBuilder.Web
             services.AddSingleton<GrammarFileGeneratorService>();
             services.AddSingleton<TranspilerRuleService>();
             services.AddSingleton<TranspilerGeneratorService>();
+            services.AddSingleton<TranspilerRunnerService>();
         }
     }
 }

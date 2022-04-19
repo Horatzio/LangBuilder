@@ -6,9 +6,16 @@ builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
+builder.Services.AddCors();
+
 builder.Services.Configure();
 
 var app = builder.Build();
+
+app.UseCors(o => o.AllowAnyMethod()
+.AllowAnyHeader()
+.SetIsOriginAllowed(origin => true)
+.AllowCredentials());
 
 app.MapControllers();
 

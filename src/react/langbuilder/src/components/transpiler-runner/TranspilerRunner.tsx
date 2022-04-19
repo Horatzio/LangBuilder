@@ -1,27 +1,64 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { TranspilerRule } from "../../api/transpiler-rule";
-import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
+import axios from "axios";
+import apiUrl from "../../api-url";
+import * as Buffer from "buffer";
 
 interface RuleSet {
   name: string;
   rules: TranspilerRule[];
 }
 
+interface TranspileResponse {
+  transpiledText: string;
+}
+
 const TranspilerRunner: React.FC = () => {
   const [ruleSet, setRuleSet] = useState<RuleSet>();
   const [sourceText, setSourceText] = useState("");
+  const [transpiledText, setTranspiledText] = useState("");
 
-  const getHighlightedSourceText = useCallback(() => {
-    const result = hljs.highlight(sourceText, { language: "c" });
-    return result.value;
-  }, [sourceText]);
+  useEffect(() => {
+    if (!ruleSet) return;
+
+    createTranspiler(ruleSet);
+
+    async function createTranspiler(ruleSet: RuleSet) {
+      await axios.post(apiUrl("api/create-transpiler"), ruleSet);
+    }
+  }, [ruleSet]);
+
+  useEffect(() => {
+    if (!ruleSet) return;
+    if (!sourceText) return;
+
+    transpileText(ruleSet);
+
+    async function transpileText(ruleSet: RuleSet) {
+      const response = await axios.post<TranspileResponse>(
+        apiUrl("api/transpile"),
+        {
+          name: ruleSet.name,
+          sourceText: sourceText,
+        }
+      );
+
+      setTranspiledText(response.data.transpiledText);
+    }
+  }, [ruleSet, sourceText]);
+
+  // const getHighlightedSourceText = useCallback(() => {
+  //   const result = hljs.highlight(sourceText, { language: "c" });
+  //   return result.value;
+  // }, [sourceText]);
 
   const unexpected = () => {
     throw new Error();
   };
   const readFile = async (f: File) => {
-    const val = Buffer.from(await f.arrayBuffer()).toString("utf-8");
+    const aBuffer = await f.arrayBuffer();
+    const val = String.fromCharCode.apply(null, new Uint8Array(aBuffer) as any);
     const ruleSet = JSON.parse(val);
     setRuleSet(ruleSet);
   };
@@ -55,16 +92,13 @@ const TranspilerRunner: React.FC = () => {
             <div className="flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
               <input
                 type="textbox"
-                className="h-25"
+                className="h-[100px] w-[200px]"
                 onChange={({ target: { value } }) => setSourceText(value)}
                 value={sourceText}
               />
-              <p
-                dangerouslySetInnerHTML={{ __html: getHighlightedSourceText() }}
-              ></p>
             </div>
             <div className="flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
-              <text className="h-25">asfasf</text>
+              <text className="h-[100px] w-[200px]">{transpiledText}</text>
             </div>
           </div>
         </div>

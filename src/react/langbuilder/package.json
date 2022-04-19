@@ -6,6 +6,7 @@
     "@headlessui/react": "^1.5.0",
     "@types/highlightjs": "^9.12.2",
     "axios": "^0.26.1",
+    "buffer": "^6.0.3",
     "highlight.js": "^11.5.1",
     "postcss-cli": "^9.1.0",
     "react": "^17.0.2",

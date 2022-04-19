@@ -10,17 +10,7 @@ Label: [a-zA-Z0-9]+;
 
 program: statement+ EOF;
 
-statement: constructDeclaration;
+statement: cattopotat;
 
-construct: 'construct';
-
-label: Label;
-
-blockStart: '[';
-
-blockEnd: ']';
-
-constructDeclarationBlockStart: construct label blockStart;
-
-constructDeclaration: constructDeclarationBlockStart blockEnd;
+cattopotat: 'cat';
 
