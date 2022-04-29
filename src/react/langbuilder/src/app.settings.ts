@@ -4,7 +4,7 @@ interface AppSettings {
   apiURL: string;
 }
 
-export async function initSettings() {
+export async function loadSettings() {
   const value = await import("./app.settings.json");
 
   if (!("apiURL" in value))

@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
             langBuilder
           </a>
           <p className="mt-4 text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l sm:border-gray-200 sm:mt-0">
-            © 2021 Tails - Tailwindcss Page Builder
+            © 2022 Bachelor's Thesis Babes-Bolyai University
           </p>
           <span className="inline-flex justify-center mt-4 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start">
             <a href="#" className="text-gray-400 hover:text-gray-500">
