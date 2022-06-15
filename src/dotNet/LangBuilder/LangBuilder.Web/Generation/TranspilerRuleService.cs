@@ -20,7 +20,6 @@ namespace LangBuilder.Source.Service
 
         public TranspilerRule TransformSimpleRule(TranspilerRuleViewModel model)
         {
-            // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
             return model switch
             {
                 DirectTranslationRuleViewModel viewModel => new DirectTranslationRule

@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
             © 2022 Bachelor's Thesis Babes-Bolyai University
           </p>
           <span className="inline-flex justify-center mt-4 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start">
-            <a href="#" className="text-gray-400 hover:text-gray-500">
+            <a href="#_" className="text-gray-400 hover:text-gray-500">
               <span className="sr-only">GitHub</span>
               <svg
                 className="w-6 h-6"
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
               </svg>
             </a>
 
-            <a href="#" className="text-gray-400 hover:text-gray-500">
+            <a href="#_" className="text-gray-400 hover:text-gray-500">
               <span className="sr-only">Dribbble</span>
               <svg
                 className="w-6 h-6"
