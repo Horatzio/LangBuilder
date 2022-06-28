@@ -3,7 +3,8 @@ import { TranspilerRule } from "../../api/transpiler-rule";
 import "highlight.js/styles/github.css";
 import axios from "axios";
 import apiUrl from "../../api-url";
-import * as Buffer from "buffer";
+import CodeInput from "./CodeInput";
+import CodeOutput from "./CodeOutput";
 
 interface RuleSet {
   name: string;
@@ -33,7 +34,7 @@ const TranspilerRunner: React.FC = () => {
     if (!ruleSet) return;
     if (!sourceText) return;
 
-    transpileText(ruleSet);
+    const timeout = setTimeout(() => transpileText(ruleSet), 200);
 
     async function transpileText(ruleSet: RuleSet) {
       const response = await axios.post<TranspileResponse>(
@@ -46,6 +47,8 @@ const TranspilerRunner: React.FC = () => {
 
       setTranspiledText(response.data.transpiledText);
     }
+
+    return () => clearTimeout(timeout);
   }, [ruleSet, sourceText]);
 
   // const getHighlightedSourceText = useCallback(() => {
@@ -67,7 +70,7 @@ const TranspilerRunner: React.FC = () => {
     <>
       <div className="flex h-fit">
         <div className="w-full flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="w-100 h-60 m-10 place-items-center">
+          <div className="w-100 h-20 m-10 place-items-center">
             <div className="w-fit h-fit">
               <form
                 data-single="true"
@@ -90,15 +93,13 @@ const TranspilerRunner: React.FC = () => {
           </div>
           <div className="flex">
             <div className="flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
-              <input
-                type="textbox"
-                className="h-[100px] w-[200px]"
-                onChange={({ target: { value } }) => setSourceText(value)}
+              <CodeInput
+                onChange={(value) => setSourceText(value)}
                 value={sourceText}
               />
             </div>
-            <div className="flex-1 m-5 bg-white shadow overflow-hidden sm:rounded-lg">
-              <text className="h-[100px] w-[200px]">{transpiledText}</text>
+            <div className="flex-1 m-5 overflow-hidden">
+              <CodeOutput value={transpiledText}></CodeOutput>
             </div>
           </div>
         </div>
