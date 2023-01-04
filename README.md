@@ -1,7 +1,12 @@
 # Introduction
 
-Welcome to my bachelor's thesis project entitled **'Automated Transpiler Generation'**.
-This project explores the concept of metaprogramming and the creation of transpilers that can automatically convert code from one programming language to another. As a software developer, I have always been fascinated by the idea of using code to write code, and this project allowed me to delve deeper into this topic. In this repository, you will find the source code and documentation for my thesis project, as well as any additional materials related to my research. I hope you find this project interesting and informative, and I welcome any feedback or questions you may have.
+Welcome to my bachelor's thesis project named **LangBuilder**, accompanied by the official Paper entitled **'Automated Transpiler Generation'**.
+
+Aptly named 'LangBuilder', the application is used to *customizably generate programming languages*. An incredibly complicated feat never before seen.
+
+This project explores the concept of metaprogramming and the creation of transpilers that can automatically convert code from one programming language to another. As a software developer, I have always been fascinated by the idea of using code to write code, and this project allowed me to delve deeper into this topic. 
+
+In this repository, you will find the source code and documentation for my thesis project, as well as any additional materials related to my research. I hope you find this project interesting and informative, and I welcome any feedback or questions you may have.
 
 ## Structure
 
